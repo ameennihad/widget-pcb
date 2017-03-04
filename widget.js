@@ -44,7 +44,7 @@ cprequire_test(["inline:com-chilipeppr-widget-pcb"], function(pcbw) {
     // you only want to have happen during testing, like loading other widgets or
     // doing unit tests. Don't remove end_test at the end or auto-remove will fail.
 
-    console.log("test running of " + pcbw.id);
+    console.log("PCBW","test running of " + pcbw.id);
     //ew.init();
 
     $('#com-chilipeppr-widget-pcb').css('position', 'relative');
@@ -84,27 +84,27 @@ cprequire_test(["inline:com-chilipeppr-widget-pcb"], function(pcbw) {
         "http://fiddle.jshell.net/chilipeppr/90698kax/show/light/",
 
     function () {
-        console.log("mycallback got called after loading flash msg module");
+        console.log("PCBW","mycallback got called after loading flash msg module");
         cprequire(["inline:com-chilipeppr-elem-flashmsg"], function (fm) {
-            //console.log("inside require of " + fm.id);
+            //console.log("PCBW","inside require of " + fm.id);
             fm.init();
         });
     });
     
     // test before and after render
     chilipeppr.subscribe("/" + pcbw.id + '/beforeToolPathRender', this, function(pcbWidget) {
-        console.log("publish test. got the /beforeToolPathRender signal. pcbWidget:", pcbWidget);
+        console.log("PCBW","publish test. got the /beforeToolPathRender signal. pcbWidget:", pcbWidget);
     });
     chilipeppr.subscribe("/" + pcbw.id + '/afterToolPathRender', this, function(pcbWidget) {
-        console.log("publish test. got the /afterToolPathRender signal. pcbWidget:", pcbWidget);
+        console.log("PCBW","publish test. got the /afterToolPathRender signal. pcbWidget:", pcbWidget);
     });
-    // test before and after render
-    chilipeppr.subscribe("/" + pcbw.id + '/beforeLayerGenerate', this, function(pcbWidget) {
-        console.log("publish test. got the /beforeLayerGenerate signal. layer:", pcbWidget.activeLayer, "pcbWidget:", pcbWidget);
-    });
-    chilipeppr.subscribe("/" + pcbw.id + '/afterLayerGenerate', this, function(pcbWidget) {
-        console.log("publish test. got the /afterLayerGenerate signal. layer:", pcbWidget.activeLayer, "eagleWidget:", pcbWidget);
-    });
+    // // test before and after render
+    // chilipeppr.subscribe("/" + pcbw.id + '/beforeLayerGenerate', this, function(pcbWidget) {
+    //     console.log("PCBW","publish test. got the /beforeLayerGenerate signal. layer:", pcbWidget.activeLayer, "pcbWidget:", pcbWidget);
+    // });
+    // chilipeppr.subscribe("/" + pcbw.id + '/afterLayerGenerate', this, function(pcbWidget) {
+    //     console.log("PCBW","publish test. got the /afterLayerGenerate signal. layer:", pcbWidget.activeLayer, "eagleWidget:", pcbWidget);
+    // });
 
 
 } /*end_test*/ );
@@ -163,6 +163,12 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
             // '/com-chilipeppr-elem-dragdrop/ondropped': 'Example: We subscribe to this signal at a higher priority to intercept the signal. We do not let it propagate by returning false.'
         },
         /**
+         * Global Objects
+         */
+        board: {},
+        sceneGroups: {board:null, layers:[]},
+        blankBoundaries: null,
+        /**
          * All widgets should have an init method. It should be run by the
          * instantiating code like a workspace or a different widget.
          */
@@ -184,8 +190,8 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
             this.setupUiFromLocalStorage();
             this.btnSetup();
             this.forkSetup();
-
-            console.log("I am done being initted.");
+            this.open();
+            console.log("PCBW","I am done being initted.");
         },
         setupDragDrop: function () {
             // subscribe to events
@@ -205,7 +211,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
             // Chevron hide/show body
             var that = this;
             $('#' + this.id + ' .hidebody').click(function(evt) {
-                console.log("hide/unhide body");
+                console.log("PCBW","hide/unhide body");
                 if ($('#' + that.id + ' .panel-body').hasClass('hidden')) {
                     // it's hidden, unhide
                     that.showBody(evt);
@@ -225,42 +231,6 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
                 trigger: "hover",
                 container: 'body'
             });
-
-            // Init Say Hello Button on Main Toolbar
-            // We are inlining an anonymous method as the callback here
-            // as opposed to a full callback method in the Hello Word 2
-            // example further below. Notice we have to use "that" so 
-            // that the this is set correctly inside the anonymous method
-            $('#' + this.id + ' .btn-sayhello').click(function() {
-                console.log("saying hello");
-                // Make sure popover is immediately hidden
-                $('#' + that.id + ' .btn-sayhello').popover("hide");
-                // Show a flash msg
-                chilipeppr.publish(
-                    "/com-chilipeppr-elem-flashmsg/flashmsg",
-                    "Hello Title",
-                    "Hello World from widget " + that.id,
-                    1000
-                );
-            });
-
-            // Init Hello World 2 button on Tab 1. Notice the use
-            // of the slick .bind(this) technique to correctly set "this"
-            // when the callback is called
-            $('#' + this.id + ' .btn-helloworld2').click(this.onHelloBtnClick.bind(this));
-
-        },
-        /**
-         * onHelloBtnClick is an example of a button click event callback
-         */
-        onHelloBtnClick: function(evt) {
-            console.log("saying hello 2 from btn in tab 1");
-            chilipeppr.publish(
-                '/com-chilipeppr-elem-flashmsg/flashmsg',
-                "Hello 2 Title",
-                "Hello World 2 from Tab 1 from widget " + this.id,
-                2000 /* show for 2 second */
-            );
         },
         /**
          * User options are available in this property for reference by your
@@ -274,7 +244,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
          * what the user wants.
          */
         setupUiFromLocalStorage: function() {
-
+            //TODO: SETUP WIDGET OPTIONS
             // Read vals from localStorage. Make sure to use a unique
             // key specific to this widget so as not to overwrite other
             // widgets' options. By using this.id as the prefix of the
@@ -287,7 +257,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
 
             if (options) {
                 options = $.parseJSON(options);
-                console.log("just evaled options: ", options);
+                console.log("PCBW","just evaled options: ", options);
             }
             else {
                 options = {
@@ -299,7 +269,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
             }
 
             this.options = options;
-            console.log("options:", options);
+            console.log("PCBW","options:", options);
 
             // show/hide body
             if (options.showBody) {
@@ -321,7 +291,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
             var options = this.options;
 
             var optionsStr = JSON.stringify(options);
-            console.log("saving options:", options, "json.stringify:", optionsStr);
+            console.log("PCBW","saving options:", options, "json.stringify:", optionsStr);
             // store settings to localStorage
             localStorage.setItem(this.id + '-options', optionsStr);
         },
@@ -401,6 +371,477 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
             });
 
         },
+        statusEl: null, // cache the status element in DOM
+        status: function (txt) {
+            console.log("PCBW","status. txt:", txt);
+            if (this.statusEl == null) this.statusEl = $('#' + this.id + '-status');
+            var len = this.statusEl.val().length;
+            if (len > 30000) {
+                console.log("PCBW","truncating status area text");
+                this.statusEl.val(this.statusEl.val().substring(len - 5000));
+            }
+            this.statusEl.val(this.statusEl.val() + txt + "\n");
+            this.statusEl.scrollTop(
+            this.statusEl[0].scrollHeight - this.statusEl.height());
+        },
+        mySceneGroup: null,
+        sceneReAddMySceneGroup: function() {
+            if (this.obj3d && this.mySceneGroup) {
+                this.obj3d.add(this.mySceneGroup);
+            }
+            this.obj3dmeta.widget.wakeAnimate();
+        },
+        sceneRemoveMySceneGroup: function() {
+            if (this.obj3d && this.mySceneGroup) {
+                this.obj3d.remove(this.mySceneGroup);
+            }
+            this.obj3dmeta.widget.wakeAnimate();
+        },
+        sceneAdd: function (obj) {
+            
+            // this method of adding puts us in the object that contains rendered Gcode
+            // that's one option, but when we send gcode to workspace we get overwritten
+            // then
+            //this.obj3d.add(obj);
+            
+            // let's add our board content outside the scope of the Gcode content
+            // so that we have it stay while the Gcode 3D Viewer still functions
+            if (this.mySceneGroup == null) {
+                this.mySceneGroup = new THREE.Group();
+                this.obj3d.add(this.mySceneGroup);
+            }
+            this.mySceneGroup.add(obj);
+            
+            this.obj3dmeta.widget.wakeAnimate();
+        },
+        sceneRemove: function (obj) {
+            if (this.mySceneGroup != null)
+                this.mySceneGroup.remove(obj);
+            this.obj3dmeta.widget.wakeAnimate();
+        },
+        onDropped: function (data, info) {
+            console.log("PCBW","onDropped. len of file:", data.length, "info:", info);
+            // we have the data
+            // double check it's a board file, cuz it could be gcode
+            var droppedFile = Board.supportedFiles.find(function(f){
+                return f.signature.test(data);
+            });
+            if (droppedFile !== undefined) {
+                console.log("PCBW","we have " + droppedFile.type + " board file!");
+                // this.colorSignal = 9249571;
+                // this.colorSmd = 9249571;
+                localStorage.setItem(this.id + '-lastDropped', data);
+                localStorage.setItem(this.id = '-lastDropped-info', JSON.stringify(info));
+                this.fileInfo = info;
+                console.log("PCBW","saved brd file to localstorage");
+                this.open(data, info);
+                return false;
+            }
+            else {
+                chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Looks like you dragged a " + droppedFile.ext + " file with unsupported contensts");
+                var extRegEx = new RegExp(droppedFile.ext + '$', 'i');
+                if(info.name.match(extRegEx)){
+                    return false;
+                }
+            }
+        },
+        onDragOver: function () {
+            console.log("PCBW","onDragOver");
+            $('#' + this.id).addClass("panel-primary");
+        },
+        onDragLeave: function () {
+            console.log("PCBW","onDragLeave");
+            $('#' + this.id).removeClass("panel-primary");
+        },
+        open: function (data, info) {
+            
+            // if we are passed the file data, then use that, otherwise look to 
+            // see if we had one saved from before, i.e. this is a browser reload scenario
+            // and we'd like to show them their recent board file
+            var file;
+            if (data) {
+                console.log("PCBW","open. loading from passed in data. data.length:", data.length, "info:", info);
+                file = data;
+                this.fileInfo = info;
+                $('#' + this.id + ' .board-draghere').addClass("hidden");
+            } else {
+                
+                // try to retrieve the most recent board file
+                file = localStorage.getItem(this.id + '-lastDropped');
+                if (file && file.length > 0) {
+                    this.fileInfo = localStorage.getItem(this.id + '-lastDropped-info');
+                    if (this.fileInfo && this.fileInfo.match(/^{/)) {
+                        this.fileInfo = JSON.parse(this.fileInfo);
+                    }
+                    console.log("PCBW","open. loading data from localStorage. file.length:", file.length, "info:", this.fileInfo);
+                } else {
+                    // there's no file, just return
+                    return;
+                }
 
+            }
+            
+            if (file) {
+                // make sure this file is a supported board
+                var droppedFile = Board.supportedFiles.find(function(f){
+                    return f.signature.test(file);
+                });
+                if (droppedFile === undefined) {
+                    chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Error Loading board file", "It looks like you had a previous board file, but it doesn't seem to be the correct format.", 10 * 1000);
+                    return;
+                }
+
+                chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Opening " + droppedFile.type + " BRD", "Parsing " + droppedFile.type + " file and do 3D rendering.", 3000, true);
+                // reset main properties
+                //this.activeLayer = 'Top';
+                this.clearBoard();
+                this.clear3dViewer();
+                // create board
+                this.board = new Board(droppedFile.type);
+                this.board.loadText(file);
+
+                this.draw3d(function() {
+                    console.log("PCBW","got callback from draw3d");
+                });
+                
+                chilipeppr.publish('/com-chilipeppr-widget-3dviewer/drawextents' );
+                chilipeppr.publish('/com-chilipeppr-widget-3dviewer/viewextents' );
+                // $('#com-chilipeppr-widget-eagle .btn-eagle-sendgcodetows').prop('disabled', false);
+            } else {
+                console.log("PCBW","no last file, so not opening");
+            }
+        },
+        /**
+         * This method is called from the main workspace telling us the user
+         * just activated us as a widget. This is not the same as load. Load
+         * happens once. Activate happens many times if user closes then opens
+         * us.
+         */
+        activateWidget: function() {
+            console.log("PCBW","PCBW","activating PCB widget");
+            //TODO: Uncomment next line after adding functionality
+            //this.reactivateMouseMove();
+            this.sceneReAddMySceneGroup();
+        },
+        unactivateWidget: function() {
+            console.log("PCBW","unactivating PCB widget");
+            this.sceneRemoveMySceneGroup();
+            //TODO: Uncomment next line after adding functionality
+            //this.deactivateMouseMove();
+            //TODO: Uncomment following two lines after adding solder mask functionality
+            // // hide solder mask as well
+            // setTimeout(this.solderMaskRenderHide.bind(this), 10);
+        },
+        /**
+         * Try to get a reference to the 3D viewer.
+         */
+        init3d: function () {
+            this.get3dObj();
+            if (this.obj3d == null) {
+                console.log("PCBW","loading 3d scene failed, try again in 1 second");
+                var attempts = 1;
+                var that = this;
+                setTimeout(function () {
+                    that.get3dObj();
+                    if (that.obj3d == null) {
+                        attempts++;
+                        setTimeout(function () {
+                            that.get3dObj();
+                            if (that.obj3d == null) {
+                                console.log("PCBW","giving up on trying to get 3d");
+                            } else {
+                                console.log("PCBW","succeeded on getting 3d after attempts:", attempts);
+                                that.onInit3dSuccess();
+                            }
+                        }, 5000);
+                    } else {
+                        console.log("PCBW","succeeded on getting 3d after attempts:", attempts);
+                        that.onInit3dSuccess();
+                    }
+                }, 1000);
+            } else {
+                this.onInit3dSuccess();
+            }
+
+        },
+        onInit3dSuccess: function () {
+            console.log("PCBW","onInit3dSuccess. That means we finally got an object back.");
+            this.clear3dViewer();
+            // open the last file
+            this.open();
+        },
+        obj3d: null, // gets the 3dviewer obj stored in here on callback
+        obj3dmeta: null, // gets metadata for 3dviewer
+        userCallbackForGet3dObj: null,
+        get3dObj: function (callback) {
+            this.userCallbackForGet3dObj = callback;
+            chilipeppr.subscribe("/com-chilipeppr-widget-3dviewer/recv3dObject", this, this.get3dObjCallback);
+            chilipeppr.publish("/com-chilipeppr-widget-3dviewer/request3dObject", "");
+            chilipeppr.unsubscribe("/com-chilipeppr-widget-3dviewer/recv3dObject", this.get3dObjCallback);
+        },
+        get3dObjCallback: function (data, meta) {
+            console.log("PCBW","got 3d obj:", data, meta);
+            this.obj3d = data;
+            this.obj3dmeta = meta;
+            if (this.userCallbackForGet3dObj) {
+                this.userCallbackForGet3dObj();
+                this.userCallbackForGet3dObj = null;
+            }
+        },
+        is3dViewerReady: false,
+        clear3dViewer: function () {
+            console.log("PCBW","clearing 3d viewer");
+            chilipeppr.publish("/com-chilipeppr-widget-3dviewer/sceneclear");
+            this.is3dViewerReady = true;
+        },
+        clearBoard: function() {
+            this.get3dObj(this.clearBoardStep2.bind(this));
+        },
+        clearBoardStep2: function() {
+            console.log("PCBW","clearing board. this.obj3d:", this.obj3d, "this.mySceneGroup:", this.mySceneGroup);
+            // remove all 3d viewer stuff
+            this.sceneRemoveMySceneGroup();
+            this.mySceneGroup = null;
+            console.log("PCBW","after clearing board. this.obj3d:", this.obj3d, "this.mySceneGroup:", this.mySceneGroup);
+            
+            // this.threePathEndMill = [];
+            
+            // // now reset arrays since they're useless now that
+            // // we removed them and will regenerate below
+            // this.threePathEndMillArr = [];
+            // this.threePathDeflatedActualArr = [];
+            // this.threePathInflatedActualArr = [];
+            // this.pathEndMillArr = [];
+            // this.pathEndMillHolesArr = [];
+            // this.pathInflatedActualArr = [];
+            // this.pathDeflatedActualArr = [];
+            
+            // // reset all main properties
+            // //this.pathsUnion = null;
+            // this.clipperBySignalKey = [];
+            // this.intersectObjects = [];
+            // this.clipperDimension = [];
+            // this.clipperDimensionInfo = []; //V5.3D201701XX Added
+            // this.dimensionsToMill = [];
+            // this.clipperSignalWires = [];
+            // this.clipperElements = [];
+            // this.clipperPads = [];
+            // this.clipperSmds = [];
+            // this.clipperVias = [];
+            // this.holesToDrill = {}; //V5.2D20170105
+            // this.holesToMill = [];  //V5.2D20170105
+            // this.holesUnhandledCount = 0;   //V5.2D20170105
+            // this.paths = null; // final paths generated from onRefresh() used to export gcode
+            // this.pathsUnion = null;
+            // this.pathsUnionHoles = null;
+            
+        },
+        
+        draw3d: function(){
+            this.clear3dViewer();
+            this.render3dBlankBoard2();
+            this.sceneAdd(this.sceneGroups.board);
+        },
+        render3dBlankBoard2: function(){
+            var x1 = this.board.fr4.x,
+                x2 = this.board.fr4.x + this.board.fr4.width,
+                y1 = this.board.fr4.y,
+                y2 = this.board.fr4.y + this.board.fr4.height,
+                z1 = 0,
+                z2 = -this.board.fr4.depth,
+                
+                regColor = 0xB87333,
+                
+                wireMat = new THREE.MeshBasicMaterial({
+                color: regColor,
+                linewidth: 2,
+                transparent: true,
+                opacity: .6
+                }),
+                
+                boardMat = new THREE.LineBasicMaterial({
+                color: regColor,
+                transparent: true,
+                opacity: .4
+                }),
+                
+                boardPath = new ClipperLib.Paths(),
+                holePaths = new ClipperLib.Paths();
+                
+            boardPath.push([
+                {X: x1, Y: y1},
+                {X: x2, Y: y1},
+                {X: x2, Y: y2},
+                {X: x1, Y: y1},
+                ]);
+                
+            holePaths.push([
+                {X: 5, Y: 5},
+                {X: 9, Y: 5},
+                {X: 9, Y: 9},
+                {X: 5, Y: 9},
+                ]);
+                
+            var mesh = this.createClipperPathsAsMesh(boardPath, boardMat, holePaths, z2);
+                
+            var geo = new THREE.EdgesGeometry(mesh.geometry);
+            var wireframe = new THREE.LineSegments( geo, wireMat );
+            
+            this.sceneGroups.board = new THREE.Group();
+            
+            this.sceneGroups.board.add(mesh);
+            this.sceneGroups.board.add(wireframe);
+                
+        },
+        render3dBlankBoard: function(){
+
+            var x1 = this.board.fr4.x,
+                x2 = this.board.fr4.x + this.board.fr4.width,
+                y1 = this.board.fr4.y,
+                y2 = this.board.fr4.y + this.board.fr4.height,
+                z1 = 0,
+                z2 = -this.board.fr4.depth,
+                regColor = 0xB87333,
+                wireMat = new THREE.MeshBasicMaterial({
+                color: regColor,
+                linewidth: 2,
+                transparent: true,
+                opacity: .6
+                }),
+                boardMat = new THREE.LineBasicMaterial({
+                color: regColor,
+                transparent: true,
+                opacity: .4
+                });
+            
+            this.blankBoundaries = {
+                MinimumX: x1,
+                MinimumY: y1,
+                MaximumX: x2,
+                MaximumY: y2
+            };
+            
+            var shape = new THREE.Shape();
+            shape.moveTo(x1, y1);
+            shape.lineTo(x1, y2);
+            shape.lineTo(x2, y2);
+            shape.lineTo(x2, y1);
+            shape.lineTo(x1, y1);
+            
+            var extrudeSettings = {
+            	amount: -this.board.fr4.depth,
+            	bevelEnabled: false
+            };
+            
+            var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+            var mesh = new THREE.Mesh( geometry, boardMat ) ;
+            
+            // var cube_bsp = new ThreeBSP( mesh );
+            // var sphere_geometry = new THREE.SphereGeometry( 50, 32, 30 );
+            // var sphere_mesh = new THREE.Mesh( sphere_geometry );
+            // sphere_mesh.position.x = -7;
+            // var sphere_bsp = new ThreeBSP( sphere_mesh );
+            // var subtract_bsp = cube_bsp.subtract( sphere_bsp );
+            // var result = subtract_bsp.toMesh( new THREE.MeshLambertMaterial({ shading: THREE.SmoothShading}) );
+            // result.geometry.computeVertexNormals();
+            
+            
+            
+            var geo = new THREE.EdgesGeometry(mesh.geometry);
+            var wireframe = new THREE.LineSegments( geo, wireMat );
+            
+            this.sceneGroups.board = new THREE.Group();
+            
+            this.sceneGroups.board.add(mesh);
+            this.sceneGroups.board.add(wireframe);
+        },
+        
+        /**
+         * Utility Functions.
+         */
+        createClipperPathsAsMesh: function (paths, material, holePath, depth){
+
+            var group = new THREE.Object3D();
+            for (var i = 0; i < paths.length; i++) {
+                var shape = new THREE.Shape();
+                for (var j = 0; j < paths[i].length; j++) {
+                    var pt = paths[i][j];
+                    if (j == 0) shape.moveTo(pt.X, pt.Y); else shape.lineTo(pt.X, pt.Y);
+                }
+               if (holePath !== undefined && holePath != null) {
+                    if (!(Array.isArray(holePath))) {
+                        holePath = [holePath];
+                    }
+                    
+                    for (var hi = 0; hi < holePath.length; hi++) {
+                        var hp = holePath[hi];
+                        var hole = new THREE.Path();
+                        for (var j = 0; j < hp.length; j++) {
+                            var pt = hp[j];
+                            if (j == 0) hole.moveTo(pt.X, pt.Y);
+                            else hole.lineTo(pt.X, pt.Y);
+                        }
+                        shape.holes.push(hole);
+                    }
+                }
+                var geometry;
+                if(depth !== undefined){
+                    var extrudeSettings = {
+                    	amount: depth,
+                    	bevelEnabled: false
+                    };
+                    geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+                }
+                else
+                    geometry = new THREE.ShapeGeometry( shape );
+                
+                var shapeMesh = new THREE.Mesh(geometry, material);
+                group.add(shapeMesh);
+            }
+            return group;
+        },
     }
 });
+
+function Board(type){
+    this.type = type;
+    this.fr4 = {x:0, y: 0, width: 150, height: 100, depth: 1.7};
+    this.classes = [];
+    this.nets = [];
+    this.layers = [];
+    this.holes = [];
+    
+}
+Board.type = {eagle: "Eagle", kiCad: "KiCad"};
+
+Board.supportedFiles = [
+    {type: Board.type.eagle, ext:".brd", signature: /<!DOCTYPE eagle SYSTEM "eagle.dtd">[\s\S]*<board>/im},
+    {type: Board.type.kiCad, ext:".kicad_pcb", signature: /\(kicad_pcb \(version \d+\) \(host pcbnew/i}];
+
+Board.prototype.classes = [];
+Board.prototype.nets = [];
+Board.prototype.layers = [];
+Board.prototype.holes = [];
+Board.prototype.dimensions = [];
+
+Board.prototype.loadText = function (text){
+    if(this.type == Board.type.eagle){
+        var parser = new DOMParser();
+        this.boardXML = parser.parseFromString(text, "text/xml");
+        this.parseEagle();
+        return;
+    }
+    
+    if(this.type == Board.type.kiCad){
+        this.parseKiCad();
+        return;
+    }
+}
+
+Board.prototype.parseEagle = function () {
+    
+}
+
+Board.prototype.parseKiCad = function () {
+    
+}
