@@ -168,6 +168,12 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
         board: {},
         sceneGroups: {board:null, layers:[]},
         blankBoundaries: null,
+        regHoles: {
+            use: true,
+            pattern: 411,
+            diameter: 2,
+            distance: 3
+        },
         /**
          * All widgets should have an init method. It should be run by the
          * instantiating code like a workspace or a different widget.
@@ -499,8 +505,9 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
                 // create board
                 this.board = new Board(droppedFile.type);
                 this.board.loadText(file);
+                console.log("Ameen: Board", this.board);
 
-                this.draw3d(function() {
+                this.render3d(function() {
                     console.log("PCBW","got callback from draw3d");
                 });
                 
@@ -637,89 +644,101 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
             
         },
         
-        draw3d: function(){
+        render3d: function(){
             this.clear3dViewer();
-            this.render3dBlankBoard2();
+            this.render3dBoard();
+            this.render3dSignals();
             this.sceneAdd(this.sceneGroups.board);
+            //this.sceneAdd(this.sceneGroups.layers[1]);
+            this.sceneGroups.layers.forEach(function(layerGroup){
+                this.sceneAdd(layerGroup);
+            }, this);
         },
-        render3dBlankBoard2: function(){
+        render3dSignals: function(){
+            var z = 0, zInc = this.board.fr4.depth / (this.board.signalLayersCount-1)*2;
+            this.sceneGroups.layers = [];
+            this.board.layers.forEach(function(layer){
+                if(layer.signals !== undefined && layer.type == "signal"){
+                    console.log("PCBW-Layer", layer.name, z);
+                    
+                    var layerGroup = new THREE.Group();
+                    layer.signals.forEach(function(signal){
+                        var signalPaths = [];
+                        if(signal.wires !== undefined){
+                            signal.wires.forEach(function(wire){
+                                var wirePath = this.createRectangularPath(wire.x1, wire.y1, wire.x2, wire.y2, wire.width);
+                                var strPath = this.createCircularPath(wire.x1, wire.y1, wire.width/2);
+                                var endPath = this.createCircularPath(wire.x2, wire.y2, wire.width/2);
+                                signalPaths.push(wirePath);
+                                signalPaths.push(strPath);
+                                signalPaths.push(endPath);
+                            }, this);
+                        }
+                        if(signal.vias !== undefined && false){
+                            signal.vias.forEach(function(via){
+                                var viaPath = this.createCircularPath(via.x, via.y, via.diameter/2);
+                                signalPaths.push(viaPath);
+                            }, this);
+                        }
+                        var signalMat = new THREE.LineBasicMaterial({
+                            color: 0x805000+0xff*z,
+                            transparent: true,
+                            polygonOffset: true, plygonOffsetFactor: 2, polygonOffsetUnits: 1,
+                            opacity: .4
+                        });
+                        var sp = this.getUnionOfClipperPaths(signalPaths);
+                        var signalMesh = this.createGeometryFromPaths(signalPaths, z);
+                        //var signalMesh = new THREE.Mesh(signalGeo, signalMat);
+                        layerGroup.add(signalMesh);
+                        
+                    }, this);
+                    this.sceneGroups.layers.push(layerGroup);
+                    z -= zInc;
+                }
+            },this);
+        },
+        render3dBoard: function(){
             var x1 = this.board.fr4.x,
                 x2 = this.board.fr4.x + this.board.fr4.width,
                 y1 = this.board.fr4.y,
                 y2 = this.board.fr4.y + this.board.fr4.height,
-                z1 = 0,
-                z2 = -this.board.fr4.depth,
+                z1 = 0.1,
+                z2 = z1-this.board.fr4.depth,
                 
                 regColor = 0xB87333,
                 
                 wireMat = new THREE.MeshBasicMaterial({
                 color: regColor,
                 linewidth: 2,
+                //polygonOffset: true, plygonOffsetFactor: 1, polygonOffsetUnits: 1,
                 transparent: true,
                 opacity: .6
                 }),
                 
                 boardMat = new THREE.LineBasicMaterial({
-                color: regColor,
-                transparent: true,
-                opacity: .4
+                color: regColor/2,
+                transparent: false,
+                //polygonOffset: true, plygonOffsetFactor: 2, polygonOffsetUnits: 1,
+                opacity: .2
                 }),
                 
-                boardPath = new ClipperLib.Paths(),
-                holePaths = new ClipperLib.Paths();
+                boardPath,
+                holePaths = [];
                 
-            boardPath.push([
+            boardPath = [
                 {X: x1, Y: y1},
                 {X: x2, Y: y1},
                 {X: x2, Y: y2},
-                {X: x1, Y: y1},
-                ]);
+                {X: x1, Y: y2},
+                {X: x1, Y: y1}
+                ];
                 
-            holePaths.push([
-                {X: 5, Y: 5},
-                {X: 9, Y: 5},
-                {X: 9, Y: 9},
-                {X: 5, Y: 9},
-                ]);
-                
-            var mesh = this.createClipperPathsAsMesh(boardPath, boardMat, holePaths, z2);
-                
-            var geo = new THREE.EdgesGeometry(mesh.geometry);
-            var wireframe = new THREE.LineSegments( geo, wireMat );
-            
-            this.sceneGroups.board = new THREE.Group();
-            
-            this.sceneGroups.board.add(mesh);
-            this.sceneGroups.board.add(wireframe);
-                
-        },
-        render3dBlankBoard: function(){
-
-            var x1 = this.board.fr4.x,
-                x2 = this.board.fr4.x + this.board.fr4.width,
-                y1 = this.board.fr4.y,
-                y2 = this.board.fr4.y + this.board.fr4.height,
-                z1 = 0,
-                z2 = -this.board.fr4.depth,
-                regColor = 0xB87333,
-                wireMat = new THREE.MeshBasicMaterial({
-                color: regColor,
-                linewidth: 2,
-                transparent: true,
-                opacity: .6
-                }),
-                boardMat = new THREE.LineBasicMaterial({
-                color: regColor,
-                transparent: true,
-                opacity: .4
-                });
-            
-            this.blankBoundaries = {
-                MinimumX: x1,
-                MinimumY: y1,
-                MaximumX: x2,
-                MaximumY: y2
-            };
+            holePaths = this.getRegHolePaths();
+            this.board.holes.forEach(function(hole){
+                holePaths.push(this.createCircularPath(hole.x, hole.y, hole.drill/2));
+            }, this);
+            //holePaths.push([{X:50, Y:50}, {X:100, Y:50},{X:100, Y:90},{X:50, Y:90},{X:50, Y:50}]);
+            var boardMesh = this.createMeshFromPath(boardPath, boardMat, holePaths, z2);
             
             var shape = new THREE.Shape();
             shape.moveTo(x1, y1);
@@ -729,60 +748,119 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
             shape.lineTo(x1, y1);
             
             var extrudeSettings = {
-            	amount: -this.board.fr4.depth,
+            	amount: z2,
             	bevelEnabled: false
             };
             
             var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-            var mesh = new THREE.Mesh( geometry, boardMat ) ;
-            
-            // var cube_bsp = new ThreeBSP( mesh );
-            // var sphere_geometry = new THREE.SphereGeometry( 50, 32, 30 );
-            // var sphere_mesh = new THREE.Mesh( sphere_geometry );
-            // sphere_mesh.position.x = -7;
-            // var sphere_bsp = new ThreeBSP( sphere_mesh );
-            // var subtract_bsp = cube_bsp.subtract( sphere_bsp );
-            // var result = subtract_bsp.toMesh( new THREE.MeshLambertMaterial({ shading: THREE.SmoothShading}) );
-            // result.geometry.computeVertexNormals();
-            
-            
+            var mesh = new THREE.Mesh( geometry, boardMat);
             
             var geo = new THREE.EdgesGeometry(mesh.geometry);
-            var wireframe = new THREE.LineSegments( geo, wireMat );
+            var wireframe = new THREE.LineSegments(geo, wireMat);
             
             this.sceneGroups.board = new THREE.Group();
-            
-            this.sceneGroups.board.add(mesh);
+            //console.log("PCBW-Holes", holePaths);
+            for(var i = 0; i < holePaths.length; i++){
+                var lineGeo1 = new THREE.Geometry();
+                var lineGeo2 = new THREE.Geometry();
+                var hole = holePaths[i];
+                for (var n = 0; n < hole.length; n++) {
+                    lineGeo1.vertices.push(new THREE.Vector3(hole[n].X, hole[n].Y, z1));
+                    lineGeo2.vertices.push(new THREE.Vector3(hole[n].X, hole[n].Y, z2));
+                }
+                var line1 = new THREE.Line(lineGeo1, wireMat);
+                var line2 = new THREE.Line(lineGeo2, wireMat);
+                this.sceneGroups.board.add(line1);
+                this.sceneGroups.board.add(line2);
+            }
+            this.sceneGroups.board.add(boardMesh);
             this.sceneGroups.board.add(wireframe);
+                
         },
-        
+        getRegHolePaths: function(){
+            var pattern = this.regHoles.pattern;
+            var count = Math.round(pattern/100);
+            var onSides = Math.round((pattern - 100 * count)/10) == 1;
+            var v = (pattern - 100 * count - 10 * onSides) == 0;
+            
+            var x = this.board.fr4.x,
+                y = this.board.fr4.y,
+                w = this.board.fr4.width,
+                h = this.board.fr4.height,
+                d = this.regHoles.distance;
+            
+            var centers = [];
+            if(count == 4){
+                centers.push({x: x + d,                 y: y + (onSides?h/2:d)});
+                centers.push({x: x + (onSides?w/2:d),   y: y + h - d});
+                centers.push({x: x + w - d,             y: y + (onSides?h/2:h-d)});
+                centers.push({x: x + (onSides?w/2:w-d), y: y + d});
+            }
+            else {
+                centers.push({x: x + (onSides?(v?w/2:d)  :d  ), y: y + (onSides?(v?d:h/2)  :(v?d:h-d))});
+                centers.push({x: x + (onSides?(v?w/2:w-d):w-d), y: y + (onSides?(v?h-d:h/2):(v?h-d:d))});
+            }
+            
+            var holes = [];
+            centers.forEach(function(center){
+                holes.push(this.createCircularPath(center.x, center.y, this.regHoles.diameter/2));
+            }, this);
+            return holes;
+        },
         /**
          * Utility Functions.
          */
-        createClipperPathsAsMesh: function (paths, material, holePath, depth){
-
+        getUnionOfClipperPaths: function (subj_paths) {
+            //console.log("getUnionOfClipperPaths");
+            var cpr = new ClipperLib.Clipper();
+            var scale = 100000;
+            ClipperLib.JS.ScaleUpPaths(subj_paths, scale);
+            cpr.AddPaths(subj_paths, ClipperLib.PolyType.ptSubject, true);
+            var subject_fillType = ClipperLib.PolyFillType.pftNonZero;
+            var clip_fillType = ClipperLib.PolyFillType.pftNonZero;
+            var solution_paths = new ClipperLib.Paths();
+            cpr.Execute(ClipperLib.ClipType.ctUnion, solution_paths, subject_fillType, clip_fillType);
+            //console.log(JSON.stringify(solution_paths));
+            //console.log("solution:", solution_paths);
+            // scale back down
+            for (var i = 0; i < solution_paths.length; i++) {
+                for (var j = 0; j < solution_paths[i].length; j++) {
+                    solution_paths[i][j].X = solution_paths[i][j].X / scale;
+                    solution_paths[i][j].Y = solution_paths[i][j].Y / scale;
+                }
+            }
+            ClipperLib.JS.ScaleDownPaths(subj_paths, scale);
+            return solution_paths;
+        },
+        createGeometryFromPaths: function(paths, z){
+            if (!(Array.isArray(paths))) paths = [paths];
+            var allGeometry = new THREE.Geometry();
+            var material = new THREE.MeshLambertMaterial({color: 0});
+            paths.forEach(function(path){
+                var shape = new THREE.Shape();
+                var firstVetex = true;
+                path.forEach(function(vertex){
+                    if(firstVetex)
+                        {shape.moveTo(vertex.X, vertex.Y); firstVetex = false;}
+                    else
+                        shape.lineTo(vertex.X, vertex.Y);
+                }, this);
+                var geometry = new THREE.ShapeGeometry(shape);
+                var mesh = new THREE.Mesh(geometry, material);
+                allGeometry.merge(mesh.geometry, mesh.matrix);
+            }, this);
+            var signalMesh = new THREE.Mesh(allGeometry, material);
+            signalMesh.position.setZ(z); 
+            return signalMesh;
+        },
+        createMeshFromPaths: function (paths, material, depth){
             var group = new THREE.Object3D();
+            if (!(Array.isArray(paths))) paths = [paths];
             for (var i = 0; i < paths.length; i++) {
                 var shape = new THREE.Shape();
                 for (var j = 0; j < paths[i].length; j++) {
                     var pt = paths[i][j];
                     if (j == 0) shape.moveTo(pt.X, pt.Y); else shape.lineTo(pt.X, pt.Y);
-                }
-               if (holePath !== undefined && holePath != null) {
-                    if (!(Array.isArray(holePath))) {
-                        holePath = [holePath];
-                    }
-                    
-                    for (var hi = 0; hi < holePath.length; hi++) {
-                        var hp = holePath[hi];
-                        var hole = new THREE.Path();
-                        for (var j = 0; j < hp.length; j++) {
-                            var pt = hp[j];
-                            if (j == 0) hole.moveTo(pt.X, pt.Y);
-                            else hole.lineTo(pt.X, pt.Y);
-                        }
-                        shape.holes.push(hole);
-                    }
                 }
                 var geometry;
                 if(depth !== undefined){
@@ -800,17 +878,83 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", /* other depen
             }
             return group;
         },
-    }
+        createMeshFromPath: function (outerPath, material, holePaths, depth){
+
+            var group = new THREE.Object3D();
+            //for (var i = 0; i < paths.length; i++) {
+            var shape = new THREE.Shape();
+            for (var j = 0; j < outerPath.length; j++) {
+                var pt = outerPath[j];
+                if (j == 0) shape.moveTo(pt.X, pt.Y); else shape.lineTo(pt.X, pt.Y);
+            }
+            if (holePaths !== undefined && holePaths != null) {
+                if (!(Array.isArray(holePaths))) holePaths = [holePaths];
+                
+                for (var hi = 0; hi < holePaths.length; hi++) {
+                    var hp = holePaths[hi];
+                    var hole = new THREE.Path();
+                    for (var j = 0; j < hp.length; j++) {
+                        var pt = hp[j];
+                        if (j == 0) hole.moveTo(pt.X, pt.Y);
+                        else hole.lineTo(pt.X, pt.Y);
+                    }
+                    shape.holes.push(hole);
+                }
+            }
+            var geometry;
+            if(depth !== undefined){
+                var extrudeSettings = {
+                	amount: depth,
+                	bevelEnabled: false
+                };
+                geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+            }
+            else
+                geometry = new THREE.ShapeGeometry( shape );
+            
+            var shapeMesh = new THREE.Mesh(geometry, material);
+            group.add(shapeMesh);
+            return group;
+        },
+        createCircularPath: function (x, y, radius, seg){
+            seg = seg || 0;
+            var segments = seg>0? seg: Math.max(Math.round(2 * Math.PI * radius) * 10, 32),
+                step = 2 * Math.PI / segments,
+                path = [];
+            for(var a = 0; a < 2 * Math.PI; a+=step){
+                path.push({X: x + radius * Math.cos(a),
+                           Y: y + radius * Math.sin(a)});
+            }
+            path.push({X: path[0].X, Y: path[0].Y});
+            return path;
+        },
+        createRectangularPath: function(x1, y1, x2, y2, width){
+            var angle = Math.atan2(y1-y2, x1-x2),
+                dx = width*Math.sin(angle)/2,
+                dy = width*Math.cos(angle)/2,
+                path = [];
+            
+            path.push({X: x1 + dx, Y: y1 - dy});
+            path.push({X: x2 + dx, Y: y2 - dy});
+            path.push({X: x2 - dx, Y: y2 + dy});
+            path.push({X: x1 - dx, Y: y1 + dy});
+            
+            path.push({X: path[0].X, Y: path[0].Y});
+            return path;
+        }
+    };
 });
 
 function Board(type){
     this.type = type;
     this.fr4 = {x:0, y: 0, width: 150, height: 100, depth: 1.7};
     this.classes = [];
-    this.nets = [];
+    this.signalLayersCount = 0;
+
+    this.signals = [];
     this.layers = [];
     this.holes = [];
-    
+    this.dimensions = [];
 }
 Board.type = {eagle: "Eagle", kiCad: "KiCad"};
 
@@ -818,30 +962,346 @@ Board.supportedFiles = [
     {type: Board.type.eagle, ext:".brd", signature: /<!DOCTYPE eagle SYSTEM "eagle.dtd">[\s\S]*<board>/im},
     {type: Board.type.kiCad, ext:".kicad_pcb", signature: /\(kicad_pcb \(version \d+\) \(host pcbnew/i}];
 
-Board.prototype.classes = [];
-Board.prototype.nets = [];
-Board.prototype.layers = [];
-Board.prototype.holes = [];
-Board.prototype.dimensions = [];
 
 Board.prototype.loadText = function (text){
     if(this.type == Board.type.eagle){
-        var parser = new DOMParser();
-        this.boardXML = parser.parseFromString(text, "text/xml");
+        var eParser = new DOMParser();
+        this.boardXML = eParser.parseFromString(text, "text/xml");
         this.parseEagle();
+        //console.log("PCBW-XML", this.boardXML);
         return;
     }
-    
+    else
     if(this.type == Board.type.kiCad){
+        var kParser = new kiCadXmlParser();
+        this.boardXML = kParser.parse(text);
         this.parseKiCad();
+        //console.log("PCBW-XML", this.boardXML, this);
         return;
     }
+};
+
+function byKey(item){
+    return item.key == this;
+}
+
+function byName(item){
+    return item.name == this;
 }
 
 Board.prototype.parseEagle = function () {
     
-}
+};
 
 Board.prototype.parseKiCad = function () {
     
+    function parseLayer(layer){
+        return {
+            key: parseFloat(layer.getAttribute('id')),
+            name: layer.getAttribute('name'),
+            type: layer.getAttribute('type')
+        };
+    }
+    
+    function parseSignal(signal){
+        return {
+            key: parseFloat(signal.getAttribute('id')),
+            name: signal.getAttribute('name')
+            };
+    }
+    
+    function parseSegment(segment){
+        return {
+            x1: parseFloat(segment.getAttribute('x1')),
+            y1: 100-parseFloat(segment.getAttribute('y1')),
+            x2: parseFloat(segment.getAttribute('x2')),
+            y2: 100-parseFloat(segment.getAttribute('y2')),
+            width: parseFloat(segment.getAttribute('width')),
+            layerName: segment.getAttribute('layer'),
+            signalKey: parseInt(segment.getAttribute('net'), 10)
+        };
+    }
+    
+    function parseVia(via){
+        var x = parseFloat(via.getAttribute('x'));
+        var y = 100-parseFloat(via.getAttribute('y'));
+        return {
+            x: x,
+            y: y,
+            diameter: parseFloat(via.getAttribute('size'))
+        };
+    }
+    
+    console.group("KiCad Parse");
+    var xmlLayers = this.boardXML.getElementsByTagName('layer');
+    Array.from(xmlLayers).forEach(function(xmlLayer){
+        var layer = parseLayer(xmlLayer);
+        this.layers.push(layer);
+        if(layer.type == "signal") this.signalLayersCount++;
+    }, this);
+    
+    var xmlSignals = this.boardXML.getElementsByTagName('net');
+    Array.from(xmlSignals).forEach(function(xmlSignal){
+        this.signals.push(parseSignal(xmlSignal));
+    }, this);
+    
+    var xmlSegments = this.boardXML.getElementsByTagName('segment');
+    Array.from(xmlSegments).forEach(function(xmlSegment){
+        var wire = parseSegment(xmlSegment),
+            layerName = xmlSegment.getAttribute('layer'),
+            signalKey = parseInt(xmlSegment.getAttribute('net'), 10),
+            layer = this.layers.find(byName, layerName);
+            console.log("debug layer.find", layer);
+        if(layer.signals === undefined) {layer.signals = []; console.log("debug layer has no signals");}
+        var signal = layer.signals.find(byKey, signalKey);
+        console.log("debug layer.signal.find", signal);
+        if (signal === undefined){
+            var s = this.signals.find(byKey, signalKey);
+            signal = {key: s.key, name: s.name};
+            layer.signals.push(signal);
+            console.log("debug layer.signal.push", signal);
+        }
+        if(signal.wires === undefined) signal.wires = [];
+        signal.wires.push(wire);
+
+    }, this);
+    
+    var xmlVias = this.boardXML.getElementsByTagName('via');
+    Array.from(xmlVias).forEach(function(xmlVia){
+        var via = parseVia(xmlVia);
+        this.holes.push({x: via.x, y: via.y, drill: parseFloat(xmlVia.getAttribute('drill'))});
+        var signalKey = parseInt(xmlVia.getAttribute('net'),10);
+        xmlVia.getAttribute('viaLayers').split(/\s/).forEach(function(layerName){
+            var layer = this.layers.find(byName, layerName);
+            if(layer.signals === undefined) layer.signals = [];
+            var signal = layer.signals.find(byKey, signalKey);
+            if (signal === undefined){
+                var s = this.signals.find(byKey, signalKey);
+                signal = {key: s.key, name: s.name};
+                layer.signals.push(signal);
+            }
+            if(signal.vias === undefined) signal.vias = [];
+            signal.vias.push(via);
+        }, this);
+    }, this);
+};
+
+/**
+ * Class to parse KiCad_pcb text file to XML format.
+ */
+function kiCadXmlParser(){
+    var that = this;
+    
+    function getEndIndex(text, oIndex){
+        var i = oIndex+1, l=text.length, bCount=1;
+        while (i<l && bCount!=0){
+            if(text[i] == "(") bCount++;
+            if(text[i] == ")") bCount--;
+            //console.log("PCBW-", i, bCount);
+            i++;
+        }
+        return i-1;
+    }
+    
+    function getAttributes(text){
+        var hasChildren = /\(/.test(text),
+            endIndex = hasChildren? text.indexOf("(") : text.length,
+            values = text.substring(0, endIndex).trim().match(/(".*?"|[^"\s]+)+(?=\s*|\s*$)/g),
+            name = values[0];
+        return {
+            name: name,
+            values: values,
+            hasChildren: hasChildren
+        };
+    }
+    
+    function assigneAttributes(element, values){
+        var name = values[0];
+        if(name == "net_class" || name == "module" || name == "model")
+            element.setAttribute("name", values[1]);
+        else if(name == "pad"){
+            element.setAttribute("net", values[1]);
+            element.setAttribute("type", values[2]);
+            element.setAttribute("shape", values[3]);
+        }
+        else if(name == "dimension")
+            element.setAttribute("value", values[1]);
+        else if(name == "fp_text"){
+            element.setAttribute("type", values[1]);
+            element.setAttribute("text", values[2]);
+        }
+        else if(name == "gt_text")
+            element.setAttribute("text", values[1]);
+    }
+    
+    function getDrawingElement(){
+        var element = that.doc.createElement("drawing");
+        var board = that.doc.createElement("board");
+        var nets = that.doc.createElement("nets");
+        var netClasses = that.doc.createElement("net_classes");
+        var modules = that.doc.createElement("modules");
+        var graphics = that.doc.createElement("graphics");
+        var segments = that.doc.createElement("segments");
+        var vias = that.doc.createElement("vias");
+        board.appendChild(nets);
+        board.appendChild(netClasses);
+        board.appendChild(modules);
+        board.appendChild(graphics);
+        board.appendChild(segments);
+        board.appendChild(vias);
+        element.appendChild(board);
+        return element;
+    }
+    
+    function addChild(parent, element){
+        if(parent.nodeName != "drawing") {
+            parent.appendChild(element);
+            return;
+        }
+        var name = element.nodeName;
+        if(name == "net_class")
+            parent.getElementsByTagName("net_classes")[0].appendChild(element);
+        else if(name == "module")
+            parent.getElementsByTagName("modules")[0].appendChild(element);
+        else if(name == "segment")
+            parent.getElementsByTagName("segments")[0].appendChild(element);
+        else if(name == "via")
+            parent.getElementsByTagName("vias")[0].appendChild(element);
+        else if(name.startsWith("gr_"))
+            parent.getElementsByTagName("graphics")[0].appendChild(element);
+        else
+            parent.appendChild(element);
+    }
+    
+    function parseText(text, parent){
+        var obi = 0, cbi = 0;
+        text = text.trim();
+        while(cbi <text.length - 1 && obi != -1 && cbi != -1){
+            //console.log("PCBW-loop", text.length, obi, cbi);
+            obi = text.indexOf("(", cbi);
+            cbi = getEndIndex(text, obi);
+            var innerText = text.substring(obi+1, cbi).trim();
+            var attributes = getAttributes(innerText);
+            //console.log("PCBW-Parsing", attributes.name, obi, cbi);
+            if(attributes.hasChildren){
+                if(parent.nodeName == attributes.name){
+                    assigneAttributes(parent, attributes.values);
+                    var element = getDrawingElement();
+                    parseText(innerText, element);
+                    parent.appendChild(element);
+                }
+                else{
+                    var element = that.doc.createElement(attributes.name);
+                    //console.log("PCBW-recursive", attributes.values);
+                    assigneAttributes(element, attributes.values);
+                    parseText(innerText, element);
+                    //console.log("PCBW-Parsed", element);
+                    addChild(parent, element);
+                    //parent.appendChild(element);
+                }
+            }
+            else {
+                var vals = text.substring(obi+1, cbi).match(/(".*?"|[^"\s]+)+(?=\s*|\s*$)/g);
+                //console.log("PCBW-attributes", attributes.name, vals);
+                if(parent.nodeName == "layers"){
+                    var layer = that.doc.createElement("layer");
+                    layer.setAttribute("id", vals[0]);
+                    layer.setAttribute("name", vals[1]);
+                    layer.setAttribute("type", vals[2]);
+                    parent.appendChild(layer);
+                }
+                else if(parent.nodeName == "setup"){
+                    var param = that.doc.createElement("param");
+                    param.setAttribute("name", vals[0]);
+                    param.setAttribute("value", vals[1]);
+                    parent.appendChild(param);
+                }
+                else if(parent.nodeName == "pcbplotparams"){
+                    var param = that.doc.createElement("param");
+                    param.setAttribute("name", vals[0]);
+                    param.setAttribute("value", vals[1]);
+                    parent.appendChild(param);
+                }
+                else if(parent.nodeName == "pts"){
+                    var xy = that.doc.createElement("xy");
+                    xy.setAttribute("x", vals[1]);
+                    xy.setAttribute("y", vals[2]);
+                    parent.appendChild(xy);
+                }
+                else if(parent.nodeName == "via" && vals[0]=="layers"){
+                    var layers = "";
+                    for(var i=1; i<vals.length; i++) layers+=vals[i] + " ";
+                    parent.setAttribute("viaLayers", layers.trim());
+                }
+                else if(parent.nodeName == "pad" && vals[0]=="layers"){
+                    var layers = "";
+                    for(var i=1; i<vals.length; i++) layers+=vals[i] + " ";
+                    parent.setAttribute("padLayers", layers.trim());
+                }
+                else if(parent.nodeName == "drawing" && vals[0] == "net"){
+                    var net = that.doc.createElement(vals[0]);
+                    net.setAttribute("id", vals[1]);
+                    net.setAttribute("name", vals[2]);
+                    parent.getElementsByTagName("nets")[0].appendChild(net);
+                }
+                else if(vals[0] == "add_net"){
+                    var net = that.doc.createElement(vals[0]);
+                    net.setAttribute("name", vals[1]);
+                    parent.appendChild(net);
+                }
+                else if(vals[0] == "area"){
+                    var area = that.doc.createElement("area");
+                    area.setAttribute("x1", vals[1]);
+                    area.setAttribute("y1", vals[2]);
+                    area.setAttribute("x2", vals[3]);
+                    area.setAttribute("y2", vals[4]);
+                    parent.appendChild(area);
+                }
+                else if(vals[0] == "xyz"){
+                    parent.setAttribute("x", vals[1]);
+                    parent.setAttribute("y", vals[2]);
+                    parent.setAttribute("z", vals[3]);
+                }
+                else if(vals[0] == "start"){
+                    parent.setAttribute("x1", vals[1]);
+                    parent.setAttribute("y1", vals[2]);
+                }
+                else if(vals[0] == "end"){
+                    parent.setAttribute("x2", vals[1]);
+                    parent.setAttribute("y2", vals[2]);
+                }
+                else if(vals[0] == "at"){
+                    parent.setAttribute("x", vals[1]);
+                    parent.setAttribute("y", vals[2]);
+                    if(vals.length == 4)
+                        parent.setAttribute("angle", vals[3]);
+                }
+                else if(vals[0] == "size" && vals.length == 3){
+                    parent.setAttribute("width", vals[1]);
+                    parent.setAttribute("height", vals[2]);
+                }
+                else if(vals[0] == "host"){
+                    that.doc.documentElement.setAttribute(vals[0], vals[1] + " " + vals[2]);
+                }
+                else if(vals[0] == "version")
+                    that.doc.documentElement.setAttribute(vals[0], vals[1]);
+                else
+                    parent.setAttribute(vals[0], vals[1]);
+            }
+        }
+    }
+    
+    this.parse = function(text) {
+        console.group("KiCad XML Parser");
+        
+        var dt = document.implementation.createDocumentType('kicad_pcb', '', 'http://kicad-pcb.org/help/file-formats/');
+        this.doc = document.implementation.createDocument("","kicad_pcb", dt);
+        
+        parseText(text, this.doc.documentElement);
+        
+        //console.log("PCBW-XML", this.doc);
+        console.groupEnd();
+        
+        return this.doc;
+    };
 }
