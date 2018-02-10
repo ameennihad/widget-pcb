@@ -24,16 +24,16 @@ requirejs.config({
     http://chilipeppr.com
     */
     paths: {
-        Three: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three',
-        ThreeTextGeometry: '//i2dcui.appspot.com/js/three/TextGeometry',
-        ThreeFontUtils: '//i2dcui.appspot.com/js/three/FontUtils',
-        ThreeHelvetiker: '//i2dcui.appspot.com/js/three/threehelvetiker',
-        Clipper: '//i2dcui.appspot.com/js/clipper/clipper_unminified'
+        Three: "https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three",
+        ThreeTextGeometry: "//i2dcui.appspot.com/js/three/TextGeometry",
+        ThreeFontUtils: "//i2dcui.appspot.com/js/three/FontUtils",
+        ThreeHelvetiker: "//i2dcui.appspot.com/js/three/threehelvetiker",
+        Clipper: "//i2dcui.appspot.com/js/clipper/clipper_unminified"
     },
     shim: {
-       ThreeTextGeometry: ['Three'],
-       ThreeFontUtils: ['Three', 'ThreeTextGeometry'],
-       ThreeHelvetiker: ['Three', 'ThreeTextGeometry', 'ThreeFontUtils'],
+       ThreeTextGeometry: ["Three"],
+       ThreeFontUtils: ["Three", "ThreeTextGeometry"],
+       ThreeHelvetiker: ["Three", "ThreeTextGeometry", "ThreeFontUtils"],
     }
 });
 
@@ -47,16 +47,16 @@ cprequire_test(["inline:com-chilipeppr-widget-pcb"], function(pcbw) {
     console.info("PCBW","test running of " + pcbw.id);
     //ew.init();
 
-    $('#com-chilipeppr-widget-pcb').css('position', 'relative');
-    $('#com-chilipeppr-widget-pcb').css('background', 'none');
-    $('#com-chilipeppr-widget-pcb').css('width', '320px');
-    $('body').prepend('<div id="3dviewer"></div>');
+    $("#com-chilipeppr-widget-pcb").css("position", "relative");
+    $("#com-chilipeppr-widget-pcb").css("background", "none");
+    $("#com-chilipeppr-widget-pcb").css("width", "320px");
+    $("body").prepend("<div id=\"3dviewer\"></div>");
 
     chilipeppr.load(
       "#3dviewer",
       "http://raw.githubusercontent.com/ameennihad/widget-3dviewer/master/auto-generated-widget.html",
       function() {
-        cprequire(['inline:com-chilipeppr-widget-3dviewer'], function (threed) {
+        cprequire(["inline:com-chilipeppr-widget-3dviewer"], function (threed) {
             threed.init({
                 doMyOwnDragDrop: false
             });
@@ -65,7 +65,7 @@ cprequire_test(["inline:com-chilipeppr-widget-pcb"], function(pcbw) {
             pcbw.init(true);
         });
     });
-    $('body').prepend('<div id="test-drag-drop"></div>');
+    $("body").prepend("<div id=\"test-drag-drop\"></div>");
     chilipeppr.load("#test-drag-drop", "http://raw.githubusercontent.com/chilipeppr/elem-dragdrop/master/auto-generated-widget.html",
 
     function () {
@@ -78,7 +78,7 @@ cprequire_test(["inline:com-chilipeppr-widget-pcb"], function(pcbw) {
         });
     });
     
-    $('body').prepend('<div id="com-chilipeppr-flash"></div>');
+    $("body").prepend("<div id=\"com-chilipeppr-flash\"></div>");
     chilipeppr.load("#com-chilipeppr-flash",
         "http://raw.githubusercontent.com/chilipeppr/element-flash/master/auto-generated-widget.html",
 
@@ -89,14 +89,14 @@ cprequire_test(["inline:com-chilipeppr-widget-pcb"], function(pcbw) {
     });
     
     // test before and after render
-    chilipeppr.subscribe("/" + pcbw.id + '/beforeToolPathRender', this, function(pcbWidget) {
+    chilipeppr.subscribe("/" + pcbw.id + "/beforeToolPathRender", this, function(pcbWidget) {
     });
-    chilipeppr.subscribe("/" + pcbw.id + '/afterToolPathRender', this, function(pcbWidget) {
+    chilipeppr.subscribe("/" + pcbw.id + "/afterToolPathRender", this, function(pcbWidget) {
     });
     // // test before and after render
-    // chilipeppr.subscribe("/" + pcbw.id + '/beforeLayerGenerate', this, function(pcbWidget) {
+    // chilipeppr.subscribe("/" + pcbw.id + "/beforeLayerGenerate", this, function(pcbWidget) {
     // });
-    // chilipeppr.subscribe("/" + pcbw.id + '/afterLayerGenerate', this, function(pcbWidget) {
+    // chilipeppr.subscribe("/" + pcbw.id + "/afterLayerGenerate", this, function(pcbWidget) {
     // });
 
 
@@ -126,7 +126,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
          */
         publish: {
             // Define a key:value pair here as strings to document what signals you publish.
-            '/onExampleGenerate': 'Example: Publish this signal when we go to generate gcode.'
+            "/onExampleGenerate": "Example: Publish this signal when we go to generate gcode."
         },
         /**
          * Define the subscribe signals that this widget/element owns or defines so that
@@ -135,7 +135,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         subscribe: {
             // Define a key:value pair here as strings to document what signals you subscribe to
             // so other widgets can publish to this widget to have it do something.
-            // '/onExampleConsume': 'Example: This widget subscribe to this signal so other widgets can send to us and we'll do something with it.'
+            // "/onExampleConsume": "Example: This widget subscribe to this signal so other widgets can send to us and we'll do something with it."
         },
         /**
          * Document the foreign publish signals, i.e. signals owned by other widgets
@@ -144,7 +144,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         foreignPublish: {
             // Define a key:value pair here as strings to document what signals you publish to
             // that are owned by foreign/other widgets.
-            // '/jsonSend': 'Example: We send Gcode to the serial port widget to do stuff with the CNC controller.'
+            // "/jsonSend": "Example: We send Gcode to the serial port widget to do stuff with the CNC controller."
         },
         /**
          * Document the foreign subscribe signals, i.e. signals owned by other widgets
@@ -153,7 +153,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         foreignSubscribe: {
             // Define a key:value pair here as strings to document what signals you subscribe to
             // that are owned by foreign/other widgets.
-            // '/com-chilipeppr-elem-dragdrop/ondropped': 'Example: We subscribe to this signal at a higher priority to intercept the signal. We do not let it propagate by returning false.'
+            // "/com-chilipeppr-elem-dragdrop/ondropped": "Example: We subscribe to this signal at a higher priority to intercept the signal. We do not let it propagate by returning false."
         },
         /**
          * All widgets should have an init method. It should be run by the
@@ -182,10 +182,10 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.setupMouseOver();
         },
         getElementId: function(id){
-            return '#' + this.id + ' #' + id;
+            return "#" + this.id + " #" + id;
         },
         getElementClass: function(id){
-            return '#' + this.id + ' .' + id;
+            return "#" + this.id + " ." + id;
         },
         /**
          * Try to get a reference to the 3D viewer.
@@ -266,9 +266,9 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
 
             // Chevron hide/show body
             var that = this;
-            $('#' + this.id + ' .hidebody').click(function(evt) {
+            $("#" + this.id + " .hidebody").click(function(evt) {
                 console.info("PCBW","hide/unhide body");
-                if ($('#' + that.id + ' .panel-body').hasClass('hidden')) {
+                if ($("#" + that.id + " .panel-body").hasClass("hidden")) {
                     // it's hidden, unhide
                     that.showBody(evt);
                 }
@@ -280,12 +280,12 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
 
             // Ask bootstrap to scan all the buttons in the widget to turn
             // on popover menus
-            $('#' + this.id + ' .btn').popover({
+            $("#" + this.id + " .btn").popover({
                 delay: 1000,
                 animation: true,
                 placement: "auto",
                 trigger: "hover",
-                container: 'body'
+                container: "body"
             });
         },
         /**
@@ -309,7 +309,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             // Feel free to add your own keys inside the options 
             // object for your own items
 
-            var options = localStorage.getItem(this.id + '-options');
+            var options = localStorage.getItem(this.id + "-options");
 
             if (options) {
                 options = $.parseJSON(options);
@@ -349,7 +349,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             var optionsStr = JSON.stringify(options);
             console.info("PCBW","saving options:", options, "json.stringify:", optionsStr);
             // store settings to localStorage
-            localStorage.setItem(this.id + '-options', optionsStr);
+            localStorage.setItem(this.id + "-options", optionsStr);
         },
         /**
          * Show the body of the panel.
@@ -360,10 +360,10 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
          * that sent in the param.
          */
         showBody: function(evt) {
-            $('#' + this.id + ' .panel-body').removeClass('hidden');
-            $('#' + this.id + ' .panel-footer').removeClass('hidden');
-            $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
-            $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
+            $("#" + this.id + " .panel-body").removeClass("hidden");
+            $("#" + this.id + " .panel-footer").removeClass("hidden");
+            $("#" + this.id + " .hidebody span").addClass("glyphicon-chevron-up");
+            $("#" + this.id + " .hidebody span").removeClass("glyphicon-chevron-down");
             if (evt !== null) {
                 this.options.showBody = true;
                 this.saveOptionsLocalStorage();
@@ -381,10 +381,10 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
          * that sent in the param.
          */
         hideBody: function(evt) {
-            $('#' + this.id + ' .panel-body').addClass('hidden');
-            $('#' + this.id + ' .panel-footer').addClass('hidden');
-            $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-up');
-            $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-down');
+            $("#" + this.id + " .panel-body").addClass("hidden");
+            $("#" + this.id + " .panel-footer").addClass("hidden");
+            $("#" + this.id + " .hidebody span").removeClass("glyphicon-chevron-up");
+            $("#" + this.id + " .hidebody span").addClass("glyphicon-chevron-down");
             if (evt !== null) {
                 this.options.showBody = false;
                 this.saveOptionsLocalStorage();
@@ -407,22 +407,22 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
          * events.
          */
         forkSetup: function() {
-            var topCssSelector = '#' + this.id;
+            var topCssSelector = "#" + this.id;
 
-            $(topCssSelector + ' .panel-title').popover({
+            $(topCssSelector + " .panel-title").popover({
                 title: this.name,
                 content: this.desc,
                 html: true,
                 delay: 1000,
                 animation: true,
-                trigger: 'hover',
-                placement: 'auto'
+                trigger: "hover",
+                placement: "auto"
             });
 
             var that = this;
             chilipeppr.load("http://raw.githubusercontent.com/chilipeppr/widget-pubsubviewer/master/auto-generated-widget.html", function() {
-                require(['inline:com-chilipeppr-elem-pubsubviewer'], function(pubsubviewer) {
-                    pubsubviewer.attachTo($(topCssSelector + ' .panel-heading .dropdown-menu'), that);
+                require(["inline:com-chilipeppr-elem-pubsubviewer"], function(pubsubviewer) {
+                    pubsubviewer.attachTo($(topCssSelector + " .panel-heading .dropdown-menu"), that);
                 });
             });
 
@@ -430,7 +430,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         statusEl: null, // cache the status element in DOM
         status: function (txt) {
             console.info("PCBW","status. txt:", txt);
-            if (this.statusEl === null) this.statusEl = $('#' + this.id + '-status');
+            if (this.statusEl === null) this.statusEl = $("#" + this.id + "-status");
             var len = this.statusEl.val().length;
             if (len > 30000) {
                 console.info("PCBW","truncating status area text");
@@ -487,8 +487,8 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 console.info("PCBW","we have " + droppedFile.type + " board file!");
                 // this.colorSignal = 9249571;
                 // this.colorSmd = 9249571;
-                localStorage.setItem(this.id + '-lastDropped', data);
-                localStorage.setItem(this.id + '-lastDropped-info', JSON.stringify(info));
+                localStorage.setItem(this.id + "-lastDropped", data);
+                localStorage.setItem(this.id + "-lastDropped-info", JSON.stringify(info));
                 this.fileInfo = info;
                 console.info("PCBW","saved brd file to localstorage");
                 this.open(data, info);
@@ -496,26 +496,26 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             }
             else {
                 droppedFile = Board.supportedFiles.find(function(f){
-                    var extRegEx = new RegExp(f.ext + '$', 'i');
+                    var extRegEx = new RegExp(f.ext + "$", "i");
                     if(info.name.match(extRegEx)) return f; else return null;
                 });
                 console.log("droppedFile", droppedFile);
                 if (droppedFile !== undefined) {
                     if(droppedFile.type == Board.types.eagle)
-                        chilipeppr.publish('/com-chilipeppr-elem-flashmsg/flashmsg', "Error Loading Eagle BRD File", "Looks like you dragged in an Eagle BRD file, but it seems to be in binary. You can open this file in Eagle and then re-save it to a new file to create a text version of your Eagle BRD file.", 15 * 1000);
+                        chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Error Loading Eagle BRD File", "Looks like you dragged in an Eagle BRD file, but it seems to be in binary. You can open this file in Eagle and then re-save it to a new file to create a text version of your Eagle BRD file.", 15 * 1000);
                     else if (droppedFile.type == Board.types.kiCad)
-                        chilipeppr.publish('/com-chilipeppr-elem-flashmsg/flashmsg', "Error Loading KiCad File", "Looks like you dragged in a file with kicad_pcb extension, but it seems to be in unsupported format.", 15 * 1000);
+                        chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Error Loading KiCad File", "Looks like you dragged in a file with kicad_pcb extension, but it seems to be in unsupported format.", 15 * 1000);
                     return false;
                 }
             }
         },
         onDragOver: function () {
             console.info("PCBW","onDragOver");
-            $('#' + this.id).addClass("panel-primary");
+            $("#" + this.id).addClass("panel-primary");
         },
         onDragLeave: function () {
             console.info("PCBW","onDragLeave");
-            $('#' + this.id).removeClass("panel-primary");
+            $("#" + this.id).removeClass("panel-primary");
         },
         raycaster: null,
         projector: null, // = new THREE.Projector();
@@ -529,19 +529,19 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         setupMouseOver: function () {
             this.raycaster = new THREE.Raycaster();
             //this.projector = new THREE.Projector();
-            $('#com-chilipeppr-widget-3dviewer-renderArea').mousemove(this.onMouseOver.bind(this));
-            //$('#com-chilipeppr-widget-3dviewer-renderArea').click(this.onMouseOver.bind(this));
-            $('#com-chilipeppr-widget-3dviewer-renderArea').mousedown(this.onMouseDown.bind(this));
-            $('#com-chilipeppr-widget-3dviewer-renderArea').mouseup(this.onMouseUp.bind(this));
-            $('#com-chilipeppr-widget-3dviewer-renderArea').dblclick(this.onDblClick.bind(this));
-            this.mouseButtonStatus = 'up';
-            $('#com-chilipeppr-widget-pcb #edit-dimension .edit-popup-close').click(this.onEditPopupClose.bind(this));
-            this.renderArea = $('#com-chilipeppr-widget-3dviewer-renderArea');
-            this.infoArea = $('.com-chilipeppr-widget-pcb-info');
+            $("#com-chilipeppr-widget-3dviewer-renderArea").mousemove(this.onMouseOver.bind(this));
+            //$("#com-chilipeppr-widget-3dviewer-renderArea").click(this.onMouseOver.bind(this));
+            $("#com-chilipeppr-widget-3dviewer-renderArea").mousedown(this.onMouseDown.bind(this));
+            $("#com-chilipeppr-widget-3dviewer-renderArea").mouseup(this.onMouseUp.bind(this));
+            $("#com-chilipeppr-widget-3dviewer-renderArea").dblclick(this.onDblClick.bind(this));
+            this.mouseButtonStatus = "up";
+            $("#com-chilipeppr-widget-pcb #edit-dimension .edit-popup-close").click(this.onEditPopupClose.bind(this));
+            this.renderArea = $("#com-chilipeppr-widget-3dviewer-renderArea");
+            this.infoArea = $(".com-chilipeppr-widget-pcb-info");
             this.infoArea.prependTo(this.renderArea);
-            //this.infoSignalArea = $('.com-chilipeppr-widget-pcb-info-signal');
+            //this.infoSignalArea = $(".com-chilipeppr-widget-pcb-info-signal");
             //this.infoSignalArea.prependTo(this.renderArea);
-            this.hidePopupsElem = $('#com-chilipeppr-widget-pcb .popups-hide');
+            this.hidePopupsElem = $("#com-chilipeppr-widget-pcb .popups-hide");
             console.log("Popup", this.hidePopupsElem);
             this.hidePopupsElem.change(function(evt) {
                 console.log("Popup", this.hidePopupsElem);
@@ -558,19 +558,19 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         reactivateMouseMove: function() {
             // add mouseover event
             //console.log("reactivateMouseMove");
-            $('#com-chilipeppr-widget-3dviewer-renderArea').mousemove(this.onMouseOver.bind(this));
+            $("#com-chilipeppr-widget-3dviewer-renderArea").mousemove(this.onMouseOver.bind(this));
         },
         deactivateMouseMove: function() {
             //console.log("deactivateMouseMove");
             // remove mouseover event
-            $('#com-chilipeppr-widget-3dviewer-renderArea').unbind("mousemove");
+            $("#com-chilipeppr-widget-3dviewer-renderArea").unbind("mousemove");
             this.hidePopups();
         },
         hidePopups: function() {
             
             //console.log("hiding popups and resetting opacities");
-            //this.infoSignalArea.addClass('hidden');
-            this.infoArea.addClass('hidden');
+            //this.infoSignalArea.addClass("hidden");
+            this.infoArea.addClass("hidden");
             
             // reset opacities
             if (this.lastIntersect !== null) {
@@ -589,24 +589,24 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         },
         lastIntersectOtherMaterials: [], // array to hold materials modified by mouseover so we can reset them later to normal opacity
         onMouseUp: function(event) {
-            this.mouseButtonStatus = 'up';
+            this.mouseButtonStatus = "up";
         },
         onMouseDown: function(event) {
-            this.mouseButtonStatus = 'down';
+            this.mouseButtonStatus = "down";
             this.hidePopups();
         },
         onDblClick: function(event) {
             var x = event.clientX;
             var y = event.clientY;
             
-            var modal = $('#com-chilipeppr-widget-pcb #edit-dimension')[0];
+            var modal = $("#com-chilipeppr-widget-pcb #edit-dimension")[0];
             modal.style.display = "block";
         },
         onEditPopupClose: function(event) {
-            $('#com-chilipeppr-widget-pcb #edit-dimension')[0].style.display = "none";
+            $("#com-chilipeppr-widget-pcb #edit-dimension")[0].style.display = "none";
         },
         onMouseOver: function (event) {
-            if(this.mouseButtonStatus == 'down') return;
+            if(this.mouseButtonStatus == "down") return;
             this.obj3dmeta.widget.wakeAnimate();
             var vector = new THREE.Vector3();
             
@@ -649,7 +649,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                         obj.object.material.transparentBackup = obj.object.material.transparent;
                     
                     var ud = obj.object.userData;
-                    if (!('type' in ud)) {
+                    if (!("type" in ud)) {
                         ud = obj.object.parent.userData;
                     }
                     
@@ -681,28 +681,28 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                             {title:"Clearance", data: ud.clearance + " mm (" + Math.round(ud.clearance / 0.0254) + " mil)"}
                         ]);
                     }
-                    this.infoArea.removeClass('hidden');
-                    this.infoArea.css('left', x + "px").css('top', y + "px");
+                    this.infoArea.removeClass("hidden");
+                    this.infoArea.css("left", x + "px").css("top", y + "px");
 
                     obj.object.material.opacity = 0.8;
                     obj.object.material.transparent = true;
                 }
             }else {
                 // hide info area
-                this.infoArea.addClass('hidden');
+                this.infoArea.addClass("hidden");
             }
         },
         updateInfoArea: function(header, footer, info){
-            this.infoArea.find('.info-title').text(header);
-            this.infoArea.find('.info-footer').text(footer);
+            this.infoArea.find(".info-title").text(header);
+            this.infoArea.find(".info-footer").text(footer);
             for(var i = 0; i <= 6; i++){
                 if(i < info.length){
-                    this.infoArea.find('.row' + i +' .title').text(info[i].title);
-                    this.infoArea.find('.row' + i +' .info').text(info[i].data);
-                    this.infoArea.find('.row' + i).removeClass('hidden');
+                    this.infoArea.find(".row" + i +" .title").text(info[i].title);
+                    this.infoArea.find(".row" + i +" .info").text(info[i].data);
+                    this.infoArea.find(".row" + i).removeClass("hidden");
                 }
                 else
-                    this.infoArea.find('.row' + i).addClass('hidden');
+                    this.infoArea.find(".row" + i).addClass("hidden");
             }
         },
         open: function (data, info) {
@@ -717,14 +717,14 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 console.info("PCBW","open. loading from passed in data. data.length:", data.length, "info:", info);
                 file = data;
                 this.fileInfo = info;
-                $(this.getElementClass('board-draghere')).addClass("hidden");
+                $(this.getElementClass("board-draghere")).addClass("hidden");
                 validFile = true;
             } else {
                 
                 // try to retrieve the most recent board file
-                file = localStorage.getItem(this.id + '-lastDropped');
+                file = localStorage.getItem(this.id + "-lastDropped");
                 if (file && file.length > 0) {
-                    this.fileInfo = localStorage.getItem(this.id + '-lastDropped-info');
+                    this.fileInfo = localStorage.getItem(this.id + "-lastDropped-info");
                     if (this.fileInfo && this.fileInfo.match(/^{/)) {
                         this.fileInfo = JSON.parse(this.fileInfo);
                     }
@@ -765,8 +765,8 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.setupUiParameters();
             this.render3d();
             
-            chilipeppr.publish('/com-chilipeppr-widget-3dviewer/drawextents' );
-            chilipeppr.publish('/com-chilipeppr-widget-3dviewer/viewextents' );
+            chilipeppr.publish("/com-chilipeppr-widget-3dviewer/drawextents" );
+            chilipeppr.publish("/com-chilipeppr-widget-3dviewer/viewextents" );
         },
         /**
          * This method is called from the main workspace telling us the user
@@ -868,34 +868,34 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         readFr4Values: function(){
             var item;
             
-            item = $(this.getElementClass('blank-pcb-x'));
+            item = $(this.getElementClass("blank-pcb-x"));
             if (item.val() === "") item.val(this.fr4.x); else this.fr4.x = parseFloat(item.val());
             
-            item = $(this.getElementClass('blank-pcb-y'));
+            item = $(this.getElementClass("blank-pcb-y"));
             if (item.val() === "") item.val(this.fr4.y); else this.fr4.y = parseFloat(item.val());
             
-            item = $(this.getElementClass('blank-pcb-width'));
+            item = $(this.getElementClass("blank-pcb-width"));
             if (item.val() === "") item.val(this.fr4.width); else this.fr4.width = parseFloat(item.val());
             
-            item = $(this.getElementClass('blank-pcb-height'));
+            item = $(this.getElementClass("blank-pcb-height"));
             if (item.val() === "") item.val(this.fr4.height); else this.fr4.height = parseFloat(item.val());
             
-            item = $(this.getElementClass('blank-pcb-depth'));
+            item = $(this.getElementClass("blank-pcb-depth"));
             if (item.val() === "") item.val(this.fr4.depth); else this.fr4.depth = parseFloat(item.val());
                         
-            item = $(this.getElementClass('blank-pcb-padding-l'));
+            item = $(this.getElementClass("blank-pcb-padding-l"));
             if (item.val() === "") item.val(this.fr4.paddingL); else this.fr4.paddingL = parseFloat(item.val());
             
-            item = $(this.getElementClass('blank-pcb-padding-b'));
+            item = $(this.getElementClass("blank-pcb-padding-b"));
             if (item.val() === "") item.val(this.fr4.paddingB); else this.fr4.paddingB = parseFloat(item.val());
             
-            item = $(this.getElementClass('blank-pcb-spacing'));
+            item = $(this.getElementClass("blank-pcb-spacing"));
             if (item.val() === "") item.val(this.fr4.spacing); else this.fr4.spacing = parseFloat(item.val());
         },
         readRegHoleGcodeValues: function(){
             var item, v, min, max;
             
-            item = $(this.getElementClass('reg-holes-depth'));
+            item = $(this.getElementClass("reg-holes-depth"));
             if (item.val() === "") item.val(this.regHoleGcodePara.depth); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min); max = parseFloat(item[0].max);
@@ -904,7 +904,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.regHoleGcodePara.depth = v;
             }
             
-            item = $(this.getElementClass('reg-holes-clearance'));
+            item = $(this.getElementClass("reg-holes-clearance"));
             if (item.val() === "") item.val(this.regHoleGcodePara.clearance); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
@@ -912,14 +912,14 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.regHoleGcodePara.clearance = v;
             }
             
-            item = $(this.getElementClass('reg-holes-feedrate'));
+            item = $(this.getElementClass("reg-holes-feedrate"));
             if (item.val() === "") item.val(this.regHoleGcodePara.feedrate); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
                 this.regHoleGcodePara.feedrate = v;
             }
-            item = $(this.getElementClass('reg-holes-spindle-rpm'));
+            item = $(this.getElementClass("reg-holes-spindle-rpm"));
             if (item.val() === "") item.val(this.regHoleGcodePara.spindleRPM); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
@@ -928,11 +928,11 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             }
         },
         readRegHoleValues: function(){
-            this.regHoles.use = $(this.getElementClass('use-reg-holes')).prop("checked");
+            this.regHoles.use = $(this.getElementClass("use-reg-holes")).prop("checked");
 
-            this.regHoles.pattern = parseInt($(this.getElementId('reg-holes-pattern')).val());
+            this.regHoles.pattern = parseInt($(this.getElementId("reg-holes-pattern")).val());
             var item, v, min, max;
-            item = $(this.getElementClass('reg-holes-diameter'));
+            item = $(this.getElementClass("reg-holes-diameter"));
             if (item.val() === "") item.val(this.regHoles.diameter); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min); max = parseFloat(item[0].max);
@@ -941,7 +941,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.regHoles.diameter = v;
             }
             
-            item = $(this.getElementClass('reg-holes-distance'));
+            item = $(this.getElementClass("reg-holes-distance"));
             if (item.val() === "") item.val(this.regHoles.distance); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min); max = parseFloat(item[0].max);
@@ -954,7 +954,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             
             this.intersectObjects = [];
             //DropDownList : Selcted Layer
-            var selectedLayerDropdown = $(this.getElementId('selectedLayer'));
+            var selectedLayerDropdown = $(this.getElementId("selectedLayer"));
             console.log(this.board);
             if(this.board){
                 var signalLayers = this.board.signalLayers();
@@ -965,7 +965,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 if(signalLayers.length >= 4){
                     selectedLayerDropdown.append($("<option />").text("All top layers"));
                     selectedLayerDropdown.append($("<option />").text("All bottom layers"));
-                    selectedLayerDropdown.prop('selectedIndex', signalLayers.length); 
+                    selectedLayerDropdown.prop("selectedIndex", signalLayers.length); 
                 }
             }
             else{
@@ -974,18 +974,18 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             selectedLayerDropdown.change(this.onChangeBoardDropdowns.bind(this));
             
             //Flipping Axis : Flipping the board horizontally or verticall
-            var flippingAxis = $('#com-chilipeppr-widget-pcb #flippingAxis');
+            var flippingAxis = $("#com-chilipeppr-widget-pcb #flippingAxis");
             flippingAxis.change(this.onChangeBoardDropdowns.bind(this));
             
             //Checkboxes : Items to Render
-            var renderSignalsT = $('#com-chilipeppr-widget-pcb #renderSignalsT');
-            var renderSignalsB = $('#com-chilipeppr-widget-pcb #renderSignalsB');
-            var renderPolygons = $('#com-chilipeppr-widget-pcb #renderPolygons');
-            var renderClearance = $('#com-chilipeppr-widget-pcb #renderClearance');
-            var renderBoard = $('#com-chilipeppr-widget-pcb #renderBoard');
-            var renderHoles = $('#com-chilipeppr-widget-pcb #renderHoles');
-            // var renderTabs = $('#com-chilipeppr-widget-pcb #renderTabs');
-            var renderBlank = $('#com-chilipeppr-widget-pcb #renderBlank');
+            var renderSignalsT = $("#com-chilipeppr-widget-pcb #renderSignalsT");
+            var renderSignalsB = $("#com-chilipeppr-widget-pcb #renderSignalsB");
+            var renderPolygons = $("#com-chilipeppr-widget-pcb #renderPolygons");
+            var renderClearance = $("#com-chilipeppr-widget-pcb #renderClearance");
+            var renderBoard = $("#com-chilipeppr-widget-pcb #renderBoard");
+            var renderHoles = $("#com-chilipeppr-widget-pcb #renderHoles");
+            // var renderTabs = $("#com-chilipeppr-widget-pcb #renderTabs");
+            var renderBlank = $("#com-chilipeppr-widget-pcb #renderBlank");
             
             renderSignalsT.prop("checked", true);
             renderSignalsB.prop("checked", true);
@@ -1032,8 +1032,8 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         * Event handelers
         */
         onChangeBoardDropdowns: function() {
-            var selectedIndex = $(this.getElementId('selectedLayer')).prop('selectedIndex');
-            var selectedText = $(this.getElementId('selectedLayer :selected')).text();
+            var selectedIndex = $(this.getElementId("selectedLayer")).prop("selectedIndex");
+            var selectedText = $(this.getElementId("selectedLayer :selected")).text();
             var showAll = selectedIndex >= this.board.signalLayersCount;
             this.boards3d.forEach(function(board3d){
                 board3d.group.visible = showAll || board3d.top.name == selectedText || board3d.bottom.name == selectedText;
@@ -1043,7 +1043,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 var layer = this.board.layers.find(byName, selectedText);
                 isTopLayer = this.board.isTopLayer(layer.key);
             }
-            var flippingAxis = $(this.getElementId('flippingAxis :selected')).text();
+            var flippingAxis = $(this.getElementId("flippingAxis :selected")).text();
             console.log("flippingAxis", flippingAxis);
             var xa = flippingAxis.startsWith("X") ? 1 : 0;
             var ya = flippingAxis.startsWith("Y") ? 1 : 0;
@@ -1057,10 +1057,10 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         onChangeRenderSignals: function(layerIndex) {
             if(!this.boards3d) return;
             var renderSignals = layerIndex === 0?
-                $(this.getElementId('renderSignalsT')).prop ("checked"):
-                $(this.getElementId('renderSignalsB')).prop ("checked");
-            var renderPolygons = $(this.getElementId('renderPolygons')).prop ("checked");
-            var renderClearance = $(this.getElementId('renderClearance')).prop ("checked");
+                $(this.getElementId("renderSignalsT")).prop ("checked"):
+                $(this.getElementId("renderSignalsB")).prop ("checked");
+            var renderPolygons = $(this.getElementId("renderPolygons")).prop ("checked");
+            var renderClearance = $(this.getElementId("renderClearance")).prop ("checked");
             
             this.boards3d.forEach(function(board3d){
                 board3d.layers[layerIndex].signals.visible = renderSignals;
@@ -1071,7 +1071,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         },
         onChangeRenderPolygons: function(layerIndex) {
             if(!this.boards3d) return;
-            var renderPolygons = $(this.getElementId('renderPolygons')).prop ("checked");
+            var renderPolygons = $(this.getElementId("renderPolygons")).prop ("checked");
             
             this.boards3d.forEach(function(board3d){
                 board3d.layers[0].polygons.visible = renderPolygons;
@@ -1081,7 +1081,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         },
         onChangeRenderClearance: function(layerIndex) {
             if(!this.boards3d) return;
-            var renderClearance = $(this.getElementId('renderClearance')).prop ("checked");
+            var renderClearance = $(this.getElementId("renderClearance")).prop ("checked");
             
             this.boards3d.forEach(function(board3d){
                 board3d.layers[0].clearance.visible = renderClearance;
@@ -1091,7 +1091,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         },
         onChangeRenderBoard: function() {
             if(!this.boards3d) return;
-            var renderBoard = $(this.getElementId('renderBoard')).prop ("checked");
+            var renderBoard = $(this.getElementId("renderBoard")).prop ("checked");
             this.boards3d.forEach(function(board3d){
                 board3d.copper.visible = renderBoard;
             }, this);
@@ -1099,7 +1099,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         },
         onChangeRenderHoles: function() {
             if(!this.boards3d) return;
-            var renderHoles = $(this.getElementId('renderHoles')).prop ("checked");
+            var renderHoles = $(this.getElementId("renderHoles")).prop ("checked");
             this.boards3d.forEach(function(board3d){
                 board3d.layers.forEach(function(layer){
                     layer.holes.visible = renderHoles;
@@ -1109,14 +1109,14 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.obj3dmeta.widget.wakeAnimate();
         },
         onChangeRenderTabs: function() {
-            var renderTabs = $('#com-chilipeppr-widget-pcb #renderTabs').prop ("checked");
+            var renderTabs = $("#com-chilipeppr-widget-pcb #renderTabs").prop ("checked");
             if(this.sceneGroups.tabs){
                 this.sceneGroups.tabs.visible = renderTabs;
                 this.obj3dmeta.widget.wakeAnimate();
             }
         },
         onChangeRenderBlank: function() {
-            var renderBlank = $(this.getElementId('renderBlank')).prop ("checked");
+            var renderBlank = $(this.getElementId("renderBlank")).prop ("checked");
             if(this.board3dFr4){
                 // this.board3dFr4.visible = renderBlank;
                 if(renderBlank)
@@ -1128,13 +1128,13 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         },
         onChangeBlankBoardParamenters: function() {
             var item, v, min;
-            item = $(this.getElementClass('blank-pcb-x'));
+            item = $(this.getElementClass("blank-pcb-x"));
             if (item.val() === "") item.val(this.fr4.x); else this.fr4.x = parseFloat(item.val());
             
-            item = $(this.getElementClass('blank-pcb-y'));
+            item = $(this.getElementClass("blank-pcb-y"));
             if (item.val() === "") item.val(this.fr4.y); else this.fr4.y = parseFloat(item.val());
             
-            item = $(this.getElementClass('blank-pcb-width'));
+            item = $(this.getElementClass("blank-pcb-width"));
             if (item.val() === "") item.val(this.fr4.width); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
@@ -1142,7 +1142,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.fr4.width = v;
             }
             
-            item = $(this.getElementClass('blank-pcb-height'));
+            item = $(this.getElementClass("blank-pcb-height"));
             if (item.val() === "") item.val(this.fr4.height); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
@@ -1150,7 +1150,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.fr4.height = v;
             }
             
-            item = $(this.getElementClass('blank-pcb-depth'));
+            item = $(this.getElementClass("blank-pcb-depth"));
             if (item.val() === "") item.val(this.fr4.depth); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
@@ -1158,7 +1158,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.fr4.depth = v;
             }
             
-            item = $(this.getElementClass('blank-pcb-padding-l'));
+            item = $(this.getElementClass("blank-pcb-padding-l"));
             if (item.val() === "") item.val(this.fr4.paddingL); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
@@ -1166,7 +1166,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.fr4.paddingL = v;
             }
             
-            item = $(this.getElementClass('blank-pcb-padding-b'));
+            item = $(this.getElementClass("blank-pcb-padding-b"));
             if (item.val() === "") item.val(this.fr4.paddingB); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
@@ -1174,7 +1174,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.fr4.paddingB = v;
             }
             
-            item = $(this.getElementClass('blank-pcb-spacing'));
+            item = $(this.getElementClass("blank-pcb-spacing"));
             if (item.val() === "") item.val(this.fr4.spacing); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
@@ -1195,7 +1195,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             // this.draw3dRegHoles();
             //this.exportGcodeRegistrationHoles();
             
-            // chilipeppr.publish('/com-chilipeppr-widget-3dviewer/drawextents' );
+            // chilipeppr.publish("/com-chilipeppr-widget-3dviewer/drawextents" );
         },
         onChangeRegHolesGcodeParamenters: function() {
             this.readRegHoleGcodeValues();
@@ -1245,7 +1245,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.sceneAdd(axis);
             
             this.obj3d.parent.children.forEach(function(child){
-                if(child.type == 'DirectionalLight'){
+                if(child.type == "DirectionalLight"){
                     child.color.r = 1;
                     child.color.g = 1;
                     child.color.b = 1;
@@ -1269,7 +1269,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         calculateHolePaths: function(){
             this.board.holes.forEach(function(hole){
                 var holePath;
-                if(!('drillShape' in hole && hole.drillShape == 'oval')){
+                if(!("drillShape" in hole && hole.drillShape == "oval")){
                     holePath = PATHS.createCircularPath(0, 0, hole.drill / 2, 32);
                     hole.drillable = false;
                     hole.tool = this.tools.cuttingBits[0];//TODO: Find a way to select right tool
@@ -1290,11 +1290,11 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 }
                 
                 var x = hole.x, y = hole.y;
-                if('packageRotation' in hole && 'packageX' in hole && 'packageY' in hole){
+                if("packageRotation" in hole && "packageX" in hole && "packageY" in hole){
                     var p = [{X:x, Y:y}];
                     PATHS.adjustPath(p, hole.packageRotation, hole.packageX, hole.packageY);
                     
-                    if('packageMirror' in hole && hole.packageMirror){
+                    if("packageMirror" in hole && hole.packageMirror){
                         PATHS.mirrorPath(p, hole.packageX, hole.packageY);
                     }
                     x = p[0].X; y = p[0].Y;
@@ -1417,7 +1417,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                             signal.wires.forEach(function(wire){
                                 var wirePath = this.createWirePath(wire.x1, wire.y1, wire.x2, wire.y2, wire.width, wire.curve);
                                 signalPaths.push(wirePath);
-                                if('cap' in wire && wire.cap == "round"){
+                                if("cap" in wire && wire.cap == "round"){
                                     var strPath = PATHS.createCircularPath(wire.x1, wire.y1, wire.width/2);
                                     var endPath = PATHS.createCircularPath(wire.x2, wire.y2, wire.width/2);
                                     signalPaths.push(strPath);
@@ -1446,7 +1446,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                             var polyPaths = [], polyCuts = [];
                             signal.polygons.forEach(function(polygon){
                                 var polyPath = this.createPolygonPath(polygon);
-                                if(polygon.pour == 'cutout'){
+                                if(polygon.pour == "cutout"){
                                     polyCuts.push(polyPath);
                                 }
                                 else{
@@ -1455,7 +1455,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                                     var d = PATHS.getInflatePaths(clipInnerPaths, polygon.isolate);
                                     polyCuts = polyCuts.concat(d);
                                     this.board.holes.forEach(function(hole){
-                                        if(hole.type == 'plain' || hole.type == 'package'){
+                                        if(hole.type == "plain" || hole.type == "package"){
                                             var h = PATHS.getInflatePaths([hole.path], polygon.isolate);
                                             polyCuts.push(h[0]);
                                         }
@@ -1591,7 +1591,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                                 color: this.board.layerColor(layer.key),
                                 side: THREE.DoubleSide,
                                 transparent: false
-                            });
+                            }, this);
                             var signalMesh = this.createMeshFromPaths(signal.outerPaths, signal.innerPaths, signalMat);
                             signalMesh.name = signal.name;
                             signalMesh.position.z = z + zd;
@@ -1646,20 +1646,20 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         
         create3dBoardV2 : function(){
             
-            var canvas = document.createElement('canvas');
+            var canvas = document.createElement("canvas");
             canvas.width = 10000; canvas.height = 7000;
-            var ctx = canvas.getContext('2d');
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = '#0e2c0e';
+            var ctx = canvas.getContext("2d");
+            ctx.globalCompositeOperation = "source-over";
+            ctx.fillStyle = "#0e2c0e";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            ctx.fillStyle = 'rgb(200, 0, 0)';
+            ctx.fillStyle = "rgb(200, 0, 0)";
             ctx.fillRect(1000, 1000, 5000, 5000);
-            ctx.fillStyle = 'rgba(0, 0, 200, 0.5)';
+            ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
             ctx.fillRect(3000, 3000, 5000, 5000);
 
-            //ctx.globalCompositeOperation = 'destination-out';
-            ctx.fillStyle = 'rgba(255, 255, 255, .2)';
+            //ctx.globalCompositeOperation = "destination-out";
+            ctx.fillStyle = "rgba(255, 255, 255, .2)";
             ctx.beginPath();
             ctx.arc(1000, 1000, 500, 0, 2 * Math.PI);
             ctx.fill();
@@ -1741,7 +1741,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.board3dFr4.position.y = this.fr4.y + this.fr4.height / 2;
             this.board3dFr4.position.z = -this.fr4.depth + zShrink;
             
-            var visible = $(this.getElementId('renderBlank')).prop ("checked");
+            var visible = $(this.getElementId("renderBlank")).prop ("checked");
             if(visible) this.sceneAdd(this.board3dFr4);
         },
         copyPath: function(original){
@@ -1809,16 +1809,16 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
 
             var holes = this.getRegHoles();
             if(holes.length < 2 || !this.regHoles.use) {
-                $(this.getElementClass('reg-holes-gcode')).text("");
+                $(this.getElementClass("reg-holes-gcode")).text("");
                 return;
             }
 
-            var clearanceHeight = $(this.getElementClass('reg-holes-clearance')).val();
-            var drillDepth = $(this.getElementClass('reg-holes-depth')).val();
-            var drillFeedrate = $(this.getElementClass('reg-holes-feedrate')).val();
-            var spindleRPM = $(this.getElementClass('reg-holes-spindle-rpm')).val();
+            var clearanceHeight = $(this.getElementClass("reg-holes-clearance")).val();
+            var drillDepth = $(this.getElementClass("reg-holes-depth")).val();
+            var drillFeedrate = $(this.getElementClass("reg-holes-feedrate")).val();
+            var spindleRPM = $(this.getElementClass("reg-holes-spindle-rpm")).val();
             var toolDia = this.regHoles.diameter;
-            var g = '';
+            var g = "";
             g += "(Gcode generated by ChiliPeppr Eagle PCB Widget " + (new Date()).toLocaleString() + ")\n";
             g += "G21 (mm mode)\n";
             g += "G90 (abs mode)\n";
@@ -1839,7 +1839,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             g += "M5 (spindle stop)\n";
             g += "M30 (prog stop)\n";
             
-            $(this.getElementClass('reg-holes-gcode')).text(g);
+            $(this.getElementClass("reg-holes-gcode")).text(g);
 
         },
         sendRegHoleGcodeToWorkspace: function(){
@@ -1849,7 +1849,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 lastModified: new Date()
             };
             // grab gcode from textarea
-            var gcodetxt = $(this.getElementClass('reg-holes-gcode')).text();
+            var gcodetxt = $(this.getElementClass("reg-holes-gcode")).text();
             
             if (gcodetxt.length < 10) {
                 chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Error Sending Gcode", "It looks like you don't have any Gcode to send to the workspace. Huh?", 5 * 1000);
@@ -1976,11 +1976,11 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             var holes = [];
             this.board.holes.forEach(function(hole){
                 var x = hole.x, y = hole.y;
-                if('packageRotation' in hole && 'packageX' in hole && 'packageY' in hole){
+                if("packageRotation" in hole && "packageX" in hole && "packageY" in hole){
                     var p =[{X:x, Y:y}];
                     PATHS.adjustPath(p, hole.packageRotation, hole.packageX, hole.packageY);
                     
-                    if('packageMirror' in hole && hole.packageMirror){
+                    if("packageMirror" in hole && hole.packageMirror){
                         PATHS.mirrorPath(p, hole.packageX, hole.packageY);
                     }
                     x = p[0].X; y = p[0].Y;
@@ -2002,8 +2002,8 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             //     dLayerNumber = 44;
             //     mLayerNumber = -1;
             // }
-            //var dLayerNumber = this.board.layers.find(byName, 'Dimension').key;
-            //var mLayerNumber = this.board.layers.find(byName, 'Milling').key;
+            //var dLayerNumber = this.board.layers.find(byName, "Dimension").key;
+            //var mLayerNumber = this.board.layers.find(byName, "Milling").key;
             var fl = false;//((this.mirrorX && !this.mirrorY) ||(!this.mirrorX & this.mirrorY));
             for(var n=0; n<this.board.dimensionsInfo.length; n++){
                 var cdi = this.board.dimensionsInfo[n];
@@ -2157,12 +2157,12 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 aEndAngle = Math.atan2(y2-ay, x2-ax),
                 cw = curve < 0;
             return {
-                'x': ax,
-                'y': ay,
-                'radius': rd,
-                'startAngle': aStartAngle,
-                'endAngle': aEndAngle,
-                'clockWise': cw
+                "x": ax,
+                "y": ay,
+                "radius": rd,
+                "startAngle": aStartAngle,
+                "endAngle": aEndAngle,
+                "clockWise": cw
             };
         },
         getPadPathIntersectedWithPolygon: function(polygons, padPath, layerNumber){
@@ -2499,8 +2499,8 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             var x = pad.x, y = pad.y;
             var paths = PATHS.getInflatePaths([pad.paths.path], polygon.thermalsClearance);
             var crossPath = this.createCrossPath(polygon.thermalsWidth);
-            if('rotation' in pad){
-                var revolve = this.board.type == Board.types.kiCad && pad.shape == 'circle'? Math.PI / 4 : pad.revolve;
+            if("rotation" in pad){
+                var revolve = this.board.type == Board.types.kiCad && pad.shape == "circle"? Math.PI / 4 : pad.revolve;
                 if(revolve !== 0) PATHS.adjustPath(crossPath, revolve, 0, 0);
                 
                 var r = Math.sqrt(x * x + y * y);
@@ -2550,27 +2550,27 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
 function TOOLS(){
 }
 
-TOOLS.bitNotFound = 'X00';
+TOOLS.bitNotFound = "X00";
 
 TOOLS.prototype.cuttingBits = [
-    {key: 'C00', diameter: 1.0, available: true},
-    {key: 'C02', diameter: 1.5, available: true},
-    {key: 'C03', diameter: 2.0, available: true},
-    {key: 'C04', diameter: 2.5, available: true},
-    {key: 'C05', diameter: 3.0, available: true}
+    {key: "C00", diameter: 1.0, available: true},
+    {key: "C02", diameter: 1.5, available: true},
+    {key: "C03", diameter: 2.0, available: true},
+    {key: "C04", diameter: 2.5, available: true},
+    {key: "C05", diameter: 3.0, available: true}
     ];
     
 TOOLS.prototype.drillBits = [
-    {key: 'D00', diameter: 0.3, available: true},
-    {key: 'D01', diameter: 0.4, available: true},
-    {key: 'D02', diameter: 0.5, available: true},
-    {key: 'D03', diameter: 0.6, available: true},
-    {key: 'M04', diameter: 0.7, available: true},
-    {key: 'M05', diameter: 0.8, available: true},
-    {key: 'M06', diameter: 0.9, available: true},
-    {key: 'M07', diameter: 1.0, available: true},
-    {key: 'M08', diameter: 1.1, available: true},
-    {key: 'M09', diameter: 1.2, available: true},
+    {key: "D00", diameter: 0.3, available: true},
+    {key: "D01", diameter: 0.4, available: true},
+    {key: "D02", diameter: 0.5, available: true},
+    {key: "D03", diameter: 0.6, available: true},
+    {key: "M04", diameter: 0.7, available: true},
+    {key: "M05", diameter: 0.8, available: true},
+    {key: "M06", diameter: 0.9, available: true},
+    {key: "M07", diameter: 1.0, available: true},
+    {key: "M08", diameter: 1.1, available: true},
+    {key: "M09", diameter: 1.2, available: true},
     ];
     
 TOOLS.prototype.getDrillBit = function(diameter){
@@ -2736,7 +2736,7 @@ PATHS.clipPathsIfIntersected = function(paths, clipPaths){
     return paths;
 };
 PATHS.createCurvePoints = function (x1, y1, x2, y2, curve){
-    var segmentLength = 1;//parseFloat($('#com-chilipeppr-widget-eagle .curve-resolution').val());
+    var segmentLength = 1;//parseFloat($("#com-chilipeppr-widget-eagle .curve-resolution").val());
     segmentLength = Math.min(segmentLength, 1.0);
     segmentLength = Math.max(segmentLength, 0.1);
     var radian = curve * Math.PI / 180,
@@ -3421,7 +3421,7 @@ Board.prototype.parseEagle = function () {
     this.param.supply = {thermalIsolate: 0, thermalsForVias: false};
     
     var i, j, k, layerSetup;
-    var param = this.boardXML.getElementsByTagName('param');
+    var param = this.boardXML.getElementsByTagName("param");
     for (i = 0; i < param.length; i++){
         var p = param[i];
         var name = p.getAttribute("name");
@@ -3483,64 +3483,64 @@ Board.prototype.parseEagle = function () {
     }
 
     console.group("Eagle Parse");
-    var layers = this.boardXML.getElementsByTagName('layer');
+    var layers = this.boardXML.getElementsByTagName("layer");
     for(i = 0; i < layers.length; i++){
         var layer = parseLayer(layers[i]);
-        if(layer.active == 'yes'){
+        if(layer.active == "yes"){
             if(layer.signalLayer && layerSetup.indexOf(layer.key) == -1) continue;
             this.layers.push(layer);
             if(layer.signalLayer) this.signalLayersCount++;
         }
     }
 
-    var netClasses = this.boardXML.getElementsByTagName('class');
+    var netClasses = this.boardXML.getElementsByTagName("class");
     for (i = 0; i < netClasses.length; i++) {
         var netClass = parseClass(netClasses[i]);
         this.netClasses.push(netClass);
     }
     
     this.elementsByName = {};
-    var elements = this.boardXML.getElementsByTagName('element');
+    var elements = this.boardXML.getElementsByTagName("element");
     for (i = 0; i < elements.length; i++) {
         var elemDict = parseElement(elements[i]);
         this.elementsByName[elemDict.name] = elemDict;
     }
     
-    var packages = this.boardXML.getElementsByTagName('package');
+    var packages = this.boardXML.getElementsByTagName("package");
     for (j = 0; j < packages.length; j++) {
         var pkg = packages[j];
-        var packageName = pkg.getAttribute('name');
+        var packageName = pkg.getAttribute("name");
 
         var packageSmds = [];
-        var smds = pkg.getElementsByTagName('smd');
+        var smds = pkg.getElementsByTagName("smd");
         for (i = 0; i < smds.length; i++) {
             var smd = smds[i];
             packageSmds.push(smd);
         }
 
         var packagePads = [];
-        var pads = pkg.getElementsByTagName('pad');
+        var pads = pkg.getElementsByTagName("pad");
         for (i = 0; i < pads.length; i++) {
             var pad = pads[i];
             packagePads.push(pad);
         }
         
         var packagePolygons = [];
-        var pPolygons = pkg.getElementsByTagName('polygon');
+        var pPolygons = pkg.getElementsByTagName("polygon");
         for (i = 0; i < pPolygons.length; i++){
             var pPolygon = pPolygons[i];
             packagePolygons.push(parsePolygon(pPolygon));
         }
         
         var packageHoles = [];
-        var holes = pkg.getElementsByTagName('hole');
+        var holes = pkg.getElementsByTagName("hole");
         for (i = 0; i < holes.length; i++) {
-            var holeDict = parseHole(holes[i], 'package');
+            var holeDict = parseHole(holes[i], "package");
             packageHoles.push(holeDict);
         }
         
         var packageWires = [];
-        var wires = pkg.getElementsByTagName('wire');
+        var wires = pkg.getElementsByTagName("wire");
         for (i = 0; i < wires.length; i++) {
             var wire = parseWire(wires[i]);
             packageWires.push(wire);
@@ -3559,10 +3559,10 @@ Board.prototype.parseEagle = function () {
     
     this.plainWires = {};
     this.plainCircles = {};
-    var plains = this.boardXML.getElementsByTagName('plain'); //Usually only one
+    var plains = this.boardXML.getElementsByTagName("plain"); //Usually only one
     for (j = 0; j < plains.length; j++) {
         var plain = plains[j],
-            plainWires = plain.getElementsByTagName('wire');
+            plainWires = plain.getElementsByTagName("wire");
         for (i = 0; i < plainWires.length; i++) {
             var plainWire = parseWire(plainWires[i]);
             //if(plainWire.layer == 41 || plainWire.layer == 42) continue;
@@ -3570,9 +3570,9 @@ Board.prototype.parseEagle = function () {
             this.plainWires[plainWire.layer].push(plainWire);
         }
         
-        var polygons = plain.getElementsByTagName('polygon');
+        var polygons = plain.getElementsByTagName("polygon");
         for (i = 0; i < polygons.length; i++) {
-            var polygon = parsePolygon(polygons[i], 'plain');
+            var polygon = parsePolygon(polygons[i], "plain");
             var polygonWires = convertPolygonVerticesToWires(polygon);
             for(k = 0; k < polygonWires.length; k++){
                 if (!this.plainWires[polygon.layer]) this.plainWires[polygon.layer] = [];
@@ -3580,7 +3580,7 @@ Board.prototype.parseEagle = function () {
             }
         }
         
-        var rectangles = plain.getElementsByTagName('rectangle');
+        var rectangles = plain.getElementsByTagName("rectangle");
         for (i = 0; i < rectangles.length; i++) {
             var rectangle = parseRectangleAsPolygon(rectangles[i]);
             var rectangleWires = convertPolygonVerticesToWires(rectangle);
@@ -3590,13 +3590,13 @@ Board.prototype.parseEagle = function () {
             }
         }
         
-        var plainHoles = plain.getElementsByTagName('hole');
+        var plainHoles = plain.getElementsByTagName("hole");
         for (i = 0; i < plainHoles.length; i++) {
-            var hole = parseHole(plainHoles[i], 'plain');
+            var hole = parseHole(plainHoles[i], "plain");
             this.holes.push(hole);
         }
         
-        var circles = plain.getElementsByTagName('circle');
+        var circles = plain.getElementsByTagName("circle");
         for (i = 0; i < circles.length; i++) {
             var circle = parseCircle(circles[i]);
             var cl = circle.layer;
@@ -3607,12 +3607,12 @@ Board.prototype.parseEagle = function () {
     //this.buildDimensionClipper(this.plainWires, this.plainCircles, this.elementsByName);
     this.buildBoardZones(this.plainWires, this.plainCircles, this.elementsByName);
     
-    var xmlSignals = this.boardXML.getElementsByTagName('signal');
+    var xmlSignals = this.boardXML.getElementsByTagName("signal");
     var signalKey = 0;
     var defaultClass = this.netClasses.find(byKey, 0);
     this.signals.push({
         key:0, 
-        name:'NotConnected', 
+        name:"NotConnected", 
         netClassKey: 0, 
         netClassName: defaultClass.name, 
         clearance: Math.max(defaultClass.clearance, this.param.clearance.wire.wire)
@@ -3625,9 +3625,9 @@ Board.prototype.parseEagle = function () {
         theSignal.netClassName = signalClass.name;
         theSignal.clearance = Math.max(signalClass.clearance, this.param.clearance.wire.wire);
         this.signals.push(theSignal);
-        var xmlWires = xmlSignal.getElementsByTagName('wire');
+        var xmlWires = xmlSignal.getElementsByTagName("wire");
         Array.from(xmlWires).forEach(function(xmlWire){
-            var layerId = xmlWire.getAttribute('layer'),
+            var layerId = xmlWire.getAttribute("layer"),
                 layer = this.layers.find(byKey, layerId),
                 //wire = parseWires(xmlWire, signalKey, layer.Name);
                 wire = parseWire(xmlWire);
@@ -3637,12 +3637,12 @@ Board.prototype.parseEagle = function () {
     
         }, this);
     
-        var xmlVias = xmlSignal.getElementsByTagName('via');
+        var xmlVias = xmlSignal.getElementsByTagName("via");
         Array.from(xmlVias).forEach(function(xmlVia){
             var via = parseVia(xmlVia, this.param.restring.vias);
             this.holes.push({x: via.x, y: via.y, drill: via.drill, type: "via"});
             var viaLayerKeys = [];
-            //var layerRange = xmlVia.getAttribute('extent').split('-');
+            //var layerRange = xmlVia.getAttribute("extent").split("-");
             //TODO: Research how vias are set in pro version of eagle
             this.layers.forEach(function(layer){
                 if(layer.signalLayer){
@@ -3658,10 +3658,10 @@ Board.prototype.parseEagle = function () {
             }, this);
         }, this);
 
-        var xmlContacts = xmlSignal.getElementsByTagName('contactref');
+        var xmlContacts = xmlSignal.getElementsByTagName("contactref");
         Array.from(xmlContacts).forEach(function(xmlContact){
-            var elemName = xmlContact.getAttribute('element');
-            var padName = xmlContact.getAttribute('pad');
+            var elemName = xmlContact.getAttribute("element");
+            var padName = xmlContact.getAttribute("pad");
             var elem = this.elementsByName[elemName];
             if (elem) {
                 elem.padSignals[padName] = theSignal.name;
@@ -3678,7 +3678,7 @@ Board.prototype.parseEagle = function () {
             }
         }, this);
         
-        var polygons = xmlSignal.getElementsByTagName('polygon');
+        var polygons = xmlSignal.getElementsByTagName("polygon");
         for (var polyIdx = 0; polyIdx < polygons.length; polyIdx++) {
             var polygon = parsePolygon(polygons[polyIdx]);
             polygon.isolate = Math.max(polygon.isolate, this.param.distance.copperDimension);
@@ -3696,7 +3696,7 @@ Board.prototype.parseEagle = function () {
         var elmPkg = this.packagesByName[elem.pkg];
         var signal;
         elmPkg.smds.forEach(function (xmlSmd) {
-            var layerNumber = xmlSmd.getAttribute('layer');
+            var layerNumber = xmlSmd.getAttribute("layer");
             if(elem.mirror) 
                 layerNumber = 17 - parseInt(layerNumber, 10);
             var layer = this.layers.find(byKey, layerNumber);
@@ -3746,40 +3746,40 @@ Board.prototype.parseEagle = function () {
     
     
     function parseLayer(layer){
-        var key = parseFloat(layer.getAttribute('number'));
+        var key = parseFloat(layer.getAttribute("number"));
         
         var isSignal = key<=16;
         var isDimention = (key == 20 || key == 46);
         var isRestrict = (key == 41 || key == 42);
         var isSoldeMask = (key == 29 || key == 30);
         
-        var layerType = isSignal ? "signal" : 'other';
+        var layerType = isSignal ? "signal" : "other";
         if(!isSignal)
         switch(key){
             case 20:
-                layerType = 'dimension';
+                layerType = "dimension";
                 break;
             case 47:
-                layerType = 'milling';
+                layerType = "milling";
                 break;
             case 41:
-                layerType = 'tRestrict';
+                layerType = "tRestrict";
                 break;
             case 42:
-                layerType = 'bRestrict';
+                layerType = "bRestrict";
                 break;
             case 29:
-                layerType = 'tSolderMask';
+                layerType = "tSolderMask";
                 break;
             case 30:
-                layerType = 'bSolderMask';
+                layerType = "bSolderMask";
                 break;
         }
         return {
             key: key,
-            name: layer.getAttribute('name'),
-            active: layer.getAttribute('active'),
-            color: layer.getAttribute('color'),
+            name: layer.getAttribute("name"),
+            active: layer.getAttribute("active"),
+            color: layer.getAttribute("color"),
             type: layerType,
             signalLayer: isSignal,
             dimensionLayer: isDimention,
@@ -3790,66 +3790,66 @@ Board.prototype.parseEagle = function () {
     }
     
     function parseClass(netClass){
-        var clearances = netClass.getElementsByTagName('clearance');
+        var clearances = netClass.getElementsByTagName("clearance");
         console.log(clearances);
-        var clearance = clearances.length === 0? 0 : clearances[0].getAttribute('value'); //TODO: Check which clearance value to use!
+        var clearance = clearances.length === 0? 0 : clearances[0].getAttribute("value"); //TODO: Check which clearance value to use!
         return {
-            key: parseInt(netClass.getAttribute('number'), 10),
-            name: netClass.getAttribute('name'),
-            width: parseFloat(netClass.getAttribute('width')),
-            drill: parseFloat(netClass.getAttribute('drill')),
+            key: parseInt(netClass.getAttribute("number"), 10),
+            name: netClass.getAttribute("name"),
+            width: parseFloat(netClass.getAttribute("width")),
+            drill: parseFloat(netClass.getAttribute("drill")),
             clearance: parseFloat(clearance)
             };
     }
     
     function parseSignal(signal, key){
-        var classKey = parseInt(signal.getAttribute('class'), 10);
+        var classKey = parseInt(signal.getAttribute("class"), 10);
         if(isNaN(classKey)) classKey = 0;
         return {
             key: key,
-            name: signal.getAttribute('name'),
+            name: signal.getAttribute("name"),
             netClassKey: classKey,
-            netClassName: '', //to be set later
+            netClassName: "", //to be set later
             clearance: 0 //to be set later
             };
     }
     
     function parseWire(wire) {
-        var width = parseFloat(wire.getAttribute('width'));
-        var curve = parseFloat(wire.getAttribute('curve'));
-        var layer = parseInt(wire.getAttribute('layer'), 10);
-        var cap = wire.getAttribute('cap');
+        var width = parseFloat(wire.getAttribute("width"));
+        var curve = parseFloat(wire.getAttribute("curve"));
+        var layer = parseInt(wire.getAttribute("layer"), 10);
+        var cap = wire.getAttribute("cap");
         if(!curve) curve = 0;
         this.millingLayerUsed = this.millingLayerUsed || (layer == 46);
         this.dimensionLayerUsed = this.dimensionLayerUsed || (layer == 20);
         return {
-            x1: parseFloat(wire.getAttribute('x1')),
-            y1: parseFloat(wire.getAttribute('y1')),
-            x2: parseFloat(wire.getAttribute('x2')),
-            y2: parseFloat(wire.getAttribute('y2')),
+            x1: parseFloat(wire.getAttribute("x1")),
+            y1: parseFloat(wire.getAttribute("y1")),
+            x2: parseFloat(wire.getAttribute("x2")),
+            y2: parseFloat(wire.getAttribute("y2")),
             width: width,
             layer: layer,
             curve: curve,
-            cap: (cap)?cap:'round'
+            cap: (cap)?cap:"round"
         };
     }
     
     function parseCircle (circle) {
-        var layer = parseInt(circle.getAttribute('layer'), 10);
+        var layer = parseInt(circle.getAttribute("layer"), 10);
         this.millingLayerUsed = this.millingLayerUsed || (layer == 46);
         this.dimensionLayerUsed = this.dimensionLayerUsed || (layer == 20);
         return {
-            x: parseFloat(circle.getAttribute('x')),
-            y: parseFloat(circle.getAttribute('y')),
-            radius: parseFloat(circle.getAttribute('radius')),
-            width: parseFloat(circle.getAttribute('width')),
+            x: parseFloat(circle.getAttribute("x")),
+            y: parseFloat(circle.getAttribute("y")),
+            radius: parseFloat(circle.getAttribute("radius")),
+            width: parseFloat(circle.getAttribute("width")),
             layer: layer
         };
     }
     
     function parseVia(via, v){
-        var drill = parseFloat(via.getAttribute('drill'));
-        var diameter = parseFloat(via.getAttribute('diameter'));
+        var drill = parseFloat(via.getAttribute("drill"));
+        var diameter = parseFloat(via.getAttribute("diameter"));
         var diameterInner = drill + 2 * Math.min(Math.max(drill*v.inner.size, v.inner.min), v.inner.max);
         var diameterOuter = drill + 2 * Math.min(Math.max(drill*v.outer.size, v.outer.min), v.outer.max);
         if(diameter){
@@ -3859,35 +3859,35 @@ Board.prototype.parseEagle = function () {
     
         }
         return {
-            x: parseFloat(via.getAttribute('x')),
-            y: parseFloat(via.getAttribute('y')),
+            x: parseFloat(via.getAttribute("x")),
+            y: parseFloat(via.getAttribute("y")),
             drill: drill,
             diameter: diameter,
             diameterInner: diameterInner,
             diameterOuter: diameterOuter,
-            layers: via.getAttribute('extent'),
-            shape: via.getAttribute('shape') || 'circle'
+            layers: via.getAttribute("extent"),
+            shape: via.getAttribute("shape") || "circle"
         };
     }
     
     function parseElement (elem) {
-        var elemRot = elem.getAttribute('rot') || "R0";
+        var elemRot = elem.getAttribute("rot") || "R0";
         var rotation = parseInt(elemRot.replace(/S|M|R/g, ""), 10) * Math.PI / 180;
         return {
-            pkg: elem.getAttribute('package'),
-            name: elem.getAttribute('name'),
-            value: elem.getAttribute('value'),
-            x: parseFloat(elem.getAttribute('x')),
-            y: parseFloat(elem.getAttribute('y')),
+            pkg: elem.getAttribute("package"),
+            name: elem.getAttribute("name"),
+            value: elem.getAttribute("value"),
+            x: parseFloat(elem.getAttribute("x")),
+            y: parseFloat(elem.getAttribute("y")),
             rotation: rotation,
-            mirror: elemRot.indexOf('M') != -1,
+            mirror: elemRot.indexOf("M") != -1,
             padSignals: {} //to be filled later
         };
     }
     
     function parsePad(pad, elm, p){
-        var drill = parseFloat(pad.getAttribute('drill'));
-        var diameter = parseFloat(pad.getAttribute('diameter'));
+        var drill = parseFloat(pad.getAttribute("drill"));
+        var diameter = parseFloat(pad.getAttribute("diameter"));
         var diameterTop = drill + 2 * Math.min(Math.max(drill*p.top.size, p.top.min), p.top.max);
         var diameterInner = drill + 2 * Math.min(Math.max(drill*p.inner.size, p.inner.min), p.inner.max);
         var diameterBottom = drill + 2 * Math.min(Math.max(drill*p.bottom.size, p.bottom.min), p.bottom.max);
@@ -3899,10 +3899,10 @@ Board.prototype.parseEagle = function () {
         }
         var xm = parseFloat(elm.x);
         var ym = parseFloat(elm.y);
-        var xp = parseFloat(pad.getAttribute('x'));
-        var yp = parseFloat(pad.getAttribute('y'));
-        var shape = pad.getAttribute('shape');
-        var padRot = pad.getAttribute('rot') || "R0";
+        var xp = parseFloat(pad.getAttribute("x"));
+        var yp = parseFloat(pad.getAttribute("y"));
+        var shape = pad.getAttribute("shape");
+        var padRot = pad.getAttribute("rot") || "R0";
         var revolve = parseInt(padRot.replace(/M|R/g, ""), 10) * Math.PI / 180;
         return {
             x: xp,
@@ -3915,12 +3915,12 @@ Board.prototype.parseEagle = function () {
             diameterInner: diameterInner,
             diameterBottom: diameterBottom,
             centerX: xm, centerY: ym,
-            type: 'thru_hole',
-            shape: (shape === null)?'circle':shape,
+            type: "thru_hole",
+            shape: (shape === null)?"circle":shape,
             drill: drill,
             drillShape: "circle",
             roundness: 0,
-            name: pad.getAttribute('name'),
+            name: pad.getAttribute("name"),
             pkg: elm.pkg,
             mirror: elm.mirror
         };
@@ -3929,9 +3929,9 @@ Board.prototype.parseEagle = function () {
     function parseSmdPad(pad, elm){
         var xm = parseFloat(elm.x);
         var ym = parseFloat(elm.y);
-        var xp = parseFloat(pad.getAttribute('x'));
-        var yp = parseFloat(pad.getAttribute('y'));
-        var padRot = pad.getAttribute('rot') || "R0";
+        var xp = parseFloat(pad.getAttribute("x"));
+        var yp = parseFloat(pad.getAttribute("y"));
+        var padRot = pad.getAttribute("rot") || "R0";
         var revolve = parseInt(padRot.replace(/M|R/g, ""), 10) * Math.PI / 180;
         
         return {
@@ -3939,44 +3939,44 @@ Board.prototype.parseEagle = function () {
             y: yp,
             revolve: revolve,
             rotation: elm.rotation,
-            sizeX: parseFloat(pad.getAttribute('dx')),
-            sizeY: parseFloat(pad.getAttribute('dy')),
+            sizeX: parseFloat(pad.getAttribute("dx")),
+            sizeY: parseFloat(pad.getAttribute("dy")),
             centerX: xm, centerY: ym,
-            type: 'smd',
-            shape: 'rect',
+            type: "smd",
+            shape: "rect",
             drill: null,
-            roundness: parseInt(pad.getAttribute('roundness') || 0, 10),
-            name: pad.getAttribute('name'),
+            roundness: parseInt(pad.getAttribute("roundness") || 0, 10),
+            name: pad.getAttribute("name"),
             pkg: elm.pkg,
             mirror: elm.mirror
         };
     }
     
     function parsePolygon(polygon) {
-        var width = parseFloat(polygon.getAttribute('width'));
-        var isolate = parseFloat(polygon.getAttribute('isolate') || 0);
-        var thermals = polygon.getAttribute('thermals') || 'yes';
+        var width = parseFloat(polygon.getAttribute("width"));
+        var isolate = parseFloat(polygon.getAttribute("isolate") || 0);
+        var thermals = polygon.getAttribute("thermals") || "yes";
         var vertices = [];
-        var vertexElems = polygon.getElementsByTagName('vertex');
+        var vertexElems = polygon.getElementsByTagName("vertex");
         for (var vertIdx = 0; vertIdx < vertexElems.length; vertIdx++) {
             var vertexElem = vertexElems[vertIdx];
-            var curve = parseFloat(vertexElem.getAttribute('curve'));
+            var curve = parseFloat(vertexElem.getAttribute("curve"));
             if(!curve) curve = 0;
             var vertex = {
-                x: parseFloat(vertexElem.getAttribute('x')),
-                y: parseFloat(vertexElem.getAttribute('y')),
+                x: parseFloat(vertexElem.getAttribute("x")),
+                y: parseFloat(vertexElem.getAttribute("y")),
                 curve: curve
             };
             vertices.push(vertex);
         }
         return {
             width: width,
-            layer: parseInt(polygon.getAttribute('layer'), 10),
-            rank: parseInt(polygon.getAttribute('rank') || 1, 10),
-            thermals: thermals == 'yes',
+            layer: parseInt(polygon.getAttribute("layer"), 10),
+            rank: parseInt(polygon.getAttribute("rank") || 1, 10),
+            thermals: thermals == "yes",
             thermalsWidth: width,
             thermalsClearance: 0,
-            pour: polygon.getAttribute('pour') || 'solid',
+            pour: polygon.getAttribute("pour") || "solid",
             isolate: isolate,
             fuck: isolate,
             vertices: vertices
@@ -3984,12 +3984,12 @@ Board.prototype.parseEagle = function () {
     }
 
     function parseRectangleAsPolygon(rectangle) {
-        var layer = parseInt(rectangle.getAttribute('layer'), 10),
-            x1 = parseFloat(rectangle.getAttribute('x1')),
-            y1 = parseFloat(rectangle.getAttribute('y1')),
-            x2 = parseFloat(rectangle.getAttribute('x2')),
-            y2 = parseFloat(rectangle.getAttribute('y2')),
-            rot = rectangle.getAttribute('rot') || "R0",
+        var layer = parseInt(rectangle.getAttribute("layer"), 10),
+            x1 = parseFloat(rectangle.getAttribute("x1")),
+            y1 = parseFloat(rectangle.getAttribute("y1")),
+            x2 = parseFloat(rectangle.getAttribute("x2")),
+            y2 = parseFloat(rectangle.getAttribute("y2")),
+            rot = rectangle.getAttribute("rot") || "R0",
             rotation = parseInt(rot.replace(/S|M|R/g, ""), 10) * Math.PI / 180,
             pt = [{X:x1, Y:y1}, {X:x1, Y:y2}, {X:x2, Y:y2}, {X:x2, Y:y1},],
             vertices = [], i;
@@ -4011,17 +4011,17 @@ Board.prototype.parseEagle = function () {
             width: 0,
             layer: layer,
             rank: 0,
-            thermals: 'no',
-            pour: 'solid',
+            thermals: "no",
+            pour: "solid",
             vertices: vertices
         };
     }
     
     function parseHole(hole, type){
         return {
-            x: parseFloat(hole.getAttribute('x')),
-            y: parseFloat(hole.getAttribute('y')),
-            drill: parseFloat(hole.getAttribute('drill')),
+            x: parseFloat(hole.getAttribute("x")),
+            y: parseFloat(hole.getAttribute("y")),
+            drill: parseFloat(hole.getAttribute("drill")),
             type: type
         };
     }
@@ -4041,7 +4041,7 @@ Board.prototype.parseEagle = function () {
                 width: polygon.width,
                 layer: polygon.layer,
                 curve: va.curve,
-                cap: 'round'
+                cap: "round"
             });
         }
         return wires;
@@ -4056,11 +4056,11 @@ Board.prototype.parseKiCad = function () {
                          
     function parseLayer(layer){
         
-        var key = parseFloat(layer.getAttribute('id'));
-        var name = layer.getAttribute('name');
-        var layerType = layer.getAttribute('type');
+        var key = parseFloat(layer.getAttribute("id"));
+        var name = layer.getAttribute("name");
+        var layerType = layer.getAttribute("type");
         var isSignal = layerType == "signal" || layerType == "power" ||layerType == "mixed";
-        var isDimention = name == 'Edge.Cuts';
+        var isDimention = name == "Edge.Cuts";
         var isRestrict = false;
         var isSoldeMask = false; //TODO: Add solder mask
         if(isDimention) layerType = "Dimension";
@@ -4079,74 +4079,74 @@ Board.prototype.parseKiCad = function () {
     
     function parseSignal(signal){
         return {
-            key: parseFloat(signal.getAttribute('id')),
-            name: signal.getAttribute('name'),
+            key: parseFloat(signal.getAttribute("id")),
+            name: signal.getAttribute("name"),
             netClassKey: 0, //to be set later
-            netClassName: '', //to be set later
+            netClassName: "", //to be set later
             clearance: 0 //to be set later
             };
     }
     
     function parseSegment(segment){
         return {
-            x1: parseFloat(segment.getAttribute('x1')),
-            y1: -parseFloat(segment.getAttribute('y1')),
-            x2: parseFloat(segment.getAttribute('x2')),
-            y2: -parseFloat(segment.getAttribute('y2')),
-            width: parseFloat(segment.getAttribute('width')),
-            layerName: segment.getAttribute('layer'),
-            signalKey: parseInt(segment.getAttribute('net'), 10),
+            x1: parseFloat(segment.getAttribute("x1")),
+            y1: -parseFloat(segment.getAttribute("y1")),
+            x2: parseFloat(segment.getAttribute("x2")),
+            y2: -parseFloat(segment.getAttribute("y2")),
+            width: parseFloat(segment.getAttribute("width")),
+            layerName: segment.getAttribute("layer"),
+            signalKey: parseInt(segment.getAttribute("net"), 10),
             curve: 0, //TODO: Chech how KiCad handels curved wires
-            cap: 'round'
+            cap: "round"
         };
     }
     
     function parseVia(via){
         return {
-            x: parseFloat(via.getAttribute('x')),
-            y: -parseFloat(via.getAttribute('y')),
-            diameter: parseFloat(via.getAttribute('size')),
+            x: parseFloat(via.getAttribute("x")),
+            y: -parseFloat(via.getAttribute("y")),
+            diameter: parseFloat(via.getAttribute("size")),
             drill: 0.635 / 2, //TODO: Get via_drill from net_class or setup
-            shape: 'circle'
+            shape: "circle"
         };
     }
     
     function parsePad(pad){
-        var xm = parseFloat(pad.parentNode.getAttribute('x'));
-        var ym = parseFloat(pad.parentNode.getAttribute('y'));
-        var xp = parseFloat(pad.getAttribute('x'));
-        var yp = parseFloat(pad.getAttribute('y'));
-        var rotation = parseFloat(pad.parentNode.getAttribute('rotation')) * Math.PI / 180;
-        var revolve = parseFloat(pad.getAttribute('rotation')) * Math.PI / 180;
+        var xm = parseFloat(pad.parentNode.getAttribute("x"));
+        var ym = parseFloat(pad.parentNode.getAttribute("y"));
+        var xp = parseFloat(pad.getAttribute("x"));
+        var yp = parseFloat(pad.getAttribute("y"));
+        var rotation = parseFloat(pad.parentNode.getAttribute("rotation")) * Math.PI / 180;
+        var revolve = parseFloat(pad.getAttribute("rotation")) * Math.PI / 180;
         
         return {
             x: xp,
             y: -yp,
             revolve: revolve + rotation,
             rotation: rotation,
-            sizeX: parseFloat(pad.getAttribute('sizex')),
-            sizeY: parseFloat(pad.getAttribute('sizey')),
+            sizeX: parseFloat(pad.getAttribute("sizex")),
+            sizeY: parseFloat(pad.getAttribute("sizey")),
             centerX: xm, centerY: -ym,
-            type: pad.getAttribute('type'),
-            shape: pad.getAttribute('shape'),
-            drill: parseFloat(pad.getAttribute('drill')),
-            drillX: parseFloat(pad.getAttribute('drillx')),
-            drillY: parseFloat(pad.getAttribute('drilly')),
-            drillShape: pad.getAttribute('ds'),
+            type: pad.getAttribute("type"),
+            shape: pad.getAttribute("shape"),
+            drill: parseFloat(pad.getAttribute("drill")),
+            drillX: parseFloat(pad.getAttribute("drillx")),
+            drillY: parseFloat(pad.getAttribute("drilly")),
+            drillShape: pad.getAttribute("ds"),
             roundness: 0,
             name: ""
         };
     }
     
     function parseLine(line, layerKey) {
-        var width = parseFloat(line.getAttribute('width'));
+        var width = parseFloat(line.getAttribute("width"));
         var curve = 0;
 
         return {
-            x1: parseFloat(line.getAttribute('x1')),
-            y1: -parseFloat(line.getAttribute('y1')),
-            x2: parseFloat(line.getAttribute('x2')),
-            y2: -parseFloat(line.getAttribute('y2')),
+            x1: parseFloat(line.getAttribute("x1")),
+            y1: -parseFloat(line.getAttribute("y1")),
+            x2: parseFloat(line.getAttribute("x2")),
+            y2: -parseFloat(line.getAttribute("y2")),
             width: width,
             layer: layerKey,
             curve: curve
@@ -4154,12 +4154,12 @@ Board.prototype.parseKiCad = function () {
     }
     
     function parseArc(arc, layerKey) {
-        var width = parseFloat(arc.getAttribute('width'));
-        var curve = parseFloat(arc.getAttribute('angle'));
-        var xc = parseFloat(arc.getAttribute('x1')), // Center X
-            yc = -parseFloat(arc.getAttribute('y1')), // Center Y
-            x1 = parseFloat(arc.getAttribute('x2')), // Curve End Point X
-            y1 = -parseFloat(arc.getAttribute('y2')), // Curve End Point X
+        var width = parseFloat(arc.getAttribute("width"));
+        var curve = parseFloat(arc.getAttribute("angle"));
+        var xc = parseFloat(arc.getAttribute("x1")), // Center X
+            yc = -parseFloat(arc.getAttribute("y1")), // Center Y
+            x1 = parseFloat(arc.getAttribute("x2")), // Curve End Point X
+            y1 = -parseFloat(arc.getAttribute("y2")), // Curve End Point X
             an = curve * Math.PI/180 + Math.atan2(yc-y1, xc-x1), // Angle in radians
             rd = Math.sqrt((xc - x1)*(xc - x1) + (yc - y1)*(yc - y1)), //Radius
             x2 = xc + rd * Math.cos(an), // Curve Start Point X
@@ -4176,19 +4176,19 @@ Board.prototype.parseKiCad = function () {
     }
     
     function parseClass(netClass, key){
-        var add_nets = netClass.getElementsByTagName('add_net');
+        var add_nets = netClass.getElementsByTagName("add_net");
         var nets = [];
-        Array.from(add_nets).forEach(function(add_net){nets.push(add_net.getAttribute('name'));});
+        Array.from(add_nets).forEach(function(add_net){nets.push(add_net.getAttribute("name"));});
         return {
             key: key,
-            name: netClass.getAttribute('name'),
-            clearance: parseFloat(netClass.getAttribute('clearance')),
+            name: netClass.getAttribute("name"),
+            clearance: parseFloat(netClass.getAttribute("clearance")),
             nets: nets
             };
     }
     
     console.group("KiCad Parse");
-    var xmlLayers = this.boardXML.getElementsByTagName('layer');
+    var xmlLayers = this.boardXML.getElementsByTagName("layer");
     Array.from(xmlLayers).forEach(function(xmlLayer){
         var layer = parseLayer(xmlLayer);
         this.layers.push(layer);
@@ -4196,9 +4196,9 @@ Board.prototype.parseKiCad = function () {
     }, this);
     
     this.plainWires = {};
-    var xmlGrLines = this.boardXML.getElementsByTagName('gr_line');
+    var xmlGrLines = this.boardXML.getElementsByTagName("gr_line");
     Array.from(xmlGrLines).forEach(function(xmlGrLine){
-        var layerName = xmlGrLine.getAttribute('layer');
+        var layerName = xmlGrLine.getAttribute("layer");
         var layer = this.layers.find(byName, layerName);
         if(layer !== undefined && layer.canRender){
             var wire = parseLine(xmlGrLine, layer.key);
@@ -4208,9 +4208,9 @@ Board.prototype.parseKiCad = function () {
     }, this);
     //this.buildDimensionClipper(this.plainWires, [], []);
     
-    var xmlArcs = this.boardXML.getElementsByTagName('gr_arc');
+    var xmlArcs = this.boardXML.getElementsByTagName("gr_arc");
     Array.from(xmlArcs).forEach(function(xmlArc){
-        var layerName = xmlArc.getAttribute('layer');
+        var layerName = xmlArc.getAttribute("layer");
         var layer = this.layers.find(byName, layerName);
         if(layer !== undefined && layer.canRender){
             var wire = parseArc(xmlArc, layer.key);
@@ -4221,12 +4221,12 @@ Board.prototype.parseKiCad = function () {
     //this.buildDimensionClipper(this.plainWires, [], []);
     this.buildBoardZones(this.plainWires, [], []);
     
-    var xmlSignals = this.boardXML.getElementsByTagName('net');
+    var xmlSignals = this.boardXML.getElementsByTagName("net");
     Array.from(xmlSignals).forEach(function(xmlSignal){
         this.signals.push(parseSignal(xmlSignal));
     }, this);
     
-    var xmlClasses = this.boardXML.getElementsByTagName('net_class');
+    var xmlClasses = this.boardXML.getElementsByTagName("net_class");
     for(var i = 0; i < xmlClasses.length; i++){
         var netClass = parseClass(xmlClasses[i], i);
         this.netClasses.push(netClass);
@@ -4240,26 +4240,26 @@ Board.prototype.parseKiCad = function () {
         }, this);
     }
     
-    var xmlSegments = this.boardXML.getElementsByTagName('segment');
+    var xmlSegments = this.boardXML.getElementsByTagName("segment");
     Array.from(xmlSegments).forEach(function(xmlSegment){
-        var layerName = xmlSegment.getAttribute('layer'),
+        var layerName = xmlSegment.getAttribute("layer"),
             layer = this.layers.find(byName, layerName);
         if(layer !== undefined && layer.canRender){
             var wire = parseSegment(xmlSegment),
-                signalKey = parseInt(xmlSegment.getAttribute('net'), 10);
+                signalKey = parseInt(xmlSegment.getAttribute("net"), 10);
             var signal = this.getSignal(layer, signalKey);
             if(signal.wires === undefined) signal.wires = [];
             signal.wires.push(wire);
         }
     }, this);
     
-    var xmlVias = this.boardXML.getElementsByTagName('via');
+    var xmlVias = this.boardXML.getElementsByTagName("via");
     Array.from(xmlVias).forEach(function(xmlVia){
         var via = parseVia(xmlVia);
         this.holes.push({x: via.x, y: via.y, drill: via.drill});
-        var signalKey = parseInt(xmlVia.getAttribute('net'),10);
+        var signalKey = parseInt(xmlVia.getAttribute("net"),10);
         var viaLayerKeys = [];
-        xmlVia.getAttribute('viaLayers').split(/\s/).forEach(function(layerName){
+        xmlVia.getAttribute("viaLayers").split(/\s/).forEach(function(layerName){
             viaLayerKeys.push(this.layers.find(byName, layerName).key);
         }, this);
         var sKey = viaLayerKeys[0];
@@ -4273,7 +4273,7 @@ Board.prototype.parseKiCad = function () {
         }
     }, this);
     
-    var xmlPads = this.boardXML.getElementsByTagName('pad');
+    var xmlPads = this.boardXML.getElementsByTagName("pad");
     
     Array.from(xmlPads).forEach(function(xmlPad){
         var pad = parsePad(xmlPad);
@@ -4287,7 +4287,7 @@ Board.prototype.parseKiCad = function () {
                 packageRotation: pad.rotation});
         
         var padLayerKeys = [];
-        xmlPad.getAttribute('padLayers').split(/\s/).forEach(function(layerName){
+        xmlPad.getAttribute("padLayers").split(/\s/).forEach(function(layerName){
             
             if(layerName == "*.Cu"){
                 padLayerKeys.push(0);
@@ -4313,7 +4313,7 @@ Board.prototype.parseKiCad = function () {
                 padLayerKeys.push(this.layers.find(byName, layerName).key);
         }, this);
         
-        var signalKey = parseInt(xmlPad.getAttribute('net'),10);
+        var signalKey = parseInt(xmlPad.getAttribute("net"),10);
         if(isNaN(signalKey)) signalKey = 0;
         padLayerKeys.forEach(function(key){
             var layer = this.layers.find(byKey, key);
@@ -4326,12 +4326,12 @@ Board.prototype.parseKiCad = function () {
         }, this);
     }, this);
     
-    var xmlZones = this.boardXML.getElementsByTagName('zone');
+    var xmlZones = this.boardXML.getElementsByTagName("zone");
     Array.from(xmlZones).forEach(function(xmlZone){
-        var xmlPolygons = xmlZone.getElementsByTagName('polygon'),
-            layerName = xmlZone.getAttribute('layer'),
+        var xmlPolygons = xmlZone.getElementsByTagName("polygon"),
+            layerName = xmlZone.getAttribute("layer"),
             layer = this.layers.find(byName, layerName),
-            signalKey = parseInt(xmlZone.getAttribute('net'),10);
+            signalKey = parseInt(xmlZone.getAttribute("net"),10);
             var signal = this.getSignal(layer, signalKey);
             if(signal.polygons === undefined) signal.polygons = [];
         Array.from(xmlPolygons).forEach(function(xmlPolygon){
@@ -4343,29 +4343,29 @@ Board.prototype.parseKiCad = function () {
     
     function parsePolygon(polygon, zone, layer) {
         var vertices = [];
-        var vertexElems = polygon.getElementsByTagName('xy');
+        var vertexElems = polygon.getElementsByTagName("xy");
         for (var vertIdx = 0; vertIdx < vertexElems.length; vertIdx++) {
             var vertexElem = vertexElems[vertIdx];
             var vertex = {
-                x: parseFloat(vertexElem.getAttribute('x')),
-                y: -parseFloat(vertexElem.getAttribute('y')),
+                x: parseFloat(vertexElem.getAttribute("x")),
+                y: -parseFloat(vertexElem.getAttribute("y")),
                 curve: 0
             };
             vertices.push(vertex);
         }
-        var connectPads = zone.getElementsByTagName('connect_pads');
-        var fill = zone.getElementsByTagName('fill');
+        var connectPads = zone.getElementsByTagName("connect_pads");
+        var fill = zone.getElementsByTagName("fill");
         var isolate = 0;
         if(connectPads.length > 0) 
-            isolate = parseFloat(connectPads[0].getAttribute('clearance') || 0);
+            isolate = parseFloat(connectPads[0].getAttribute("clearance") || 0);
         return {
             width: 0,
             layer: layer.key,
-            rank: parseInt(zone.getAttribute('priority') || 0, 10),
+            rank: parseInt(zone.getAttribute("priority") || 0, 10),
             thermals: true,
-            thermalsWidth: parseFloat(fill[0].getAttribute('thermal_bridge_width')),
-            thermalsClearance: parseFloat(fill[0].getAttribute('thermal_gap')),
-            pour: 'solid',
+            thermalsWidth: parseFloat(fill[0].getAttribute("thermal_bridge_width")),
+            thermalsClearance: parseFloat(fill[0].getAttribute("thermal_gap")),
+            pour: "solid",
             isolate: isolate,
             vertices: vertices
         };
@@ -4392,8 +4392,8 @@ function kiCadXmlParser(){
                     quotedText = true;
             }
             else if(!quotedText){
-                if(c == '(') bCount++;
-                if(c == ')') bCount--;
+                if(c == "(") bCount++;
+                if(c == ")") bCount--;
             }
             i++;
         }
@@ -4661,7 +4661,7 @@ function kiCadXmlParser(){
     this.parse = function(text) {
         console.group("KiCad XML Parser");
         //this.text = text;
-        var dt = document.implementation.createDocumentType('kicad_pcb', '', 'http://kicad-pcb.org/help/file-formats/');
+        var dt = document.implementation.createDocumentType("kicad_pcb", "", "http://kicad-pcb.org/help/file-formats/");
         this.doc = document.implementation.createDocument("","kicad_pcb", dt);
         
         parseText(text, this.doc.documentElement);
