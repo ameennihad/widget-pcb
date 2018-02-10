@@ -1,0 +1,24 @@
+Eagle Layers: https://www.autodesk.com/products/eagle/blog/every-layer-explained-autodesk-eagle/
+
+Layer 20: Dimension
+The Dimension layer has several purposes, the first of which is to specify the outline of your board.
+Secondarily, you can also use this layer in your design rules to keep copper pours away from the edge of your PCB.
+Some fab houses like OSH Park will use this Dimension layer to generate a board outline Gerber.
+This will serve as the exact shape of your PCB when they cut it into a fabrication panel.
+
+Layer 46: Milling
+This layer is solely dedicated to the milling of holes, inner cutouts, and any other kind of contour that needs to be cut by your manufacturer.
+Keep in mind, this layer is not meant to define the dimensions of your board; you’ll need to keep that data on Layer 20. 
+And unlike the Dimension layer, which can interact with your design rules, the Milling layer does not.
+
+Layer 29-30: tStop/bStop
+These two layers indicate where your solder mask should not be applied.
+When placing either through-hole or surface mount components, these parts will typically include a solder mask expansion area that resides on these two layers.
+Defining an area that you don’t want soldermask applied to will provide space on your copper for soldering parts.
+You can also use this layer to draw custom structures, like heatsinks or gold artwork by exposing specific areas of copper.
+
+Layer 41-43: tRestrict/bRestrict/vRestrict
+tRestrict and bRestrict are used to indicate where traces or copper should be removed on your board layout.
+By default, when you fill in a polygon with copper over a restrict layer, the restricted section will remove any copper.
+This layer also comes in handy when using the autorouter in EAGLE, as it can prevent traces from being routed in defined areas.
+vRestrict will indicate where vias should not be placed, and this layer will also prevent the autorouter from placing vias in defined sections.
