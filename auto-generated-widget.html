@@ -1742,7 +1742,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 }
             }, this);
         },
-        adjustBoards3dPositions(){
+        adjustBoards3dPositions: function(){
             var w = this.board.boardBoundaries.MaximumX - this.board.boardBoundaries.MinimumX,
                 h = this.board.boardBoundaries.MaximumY - this.board.boardBoundaries.MinimumY,
                 f = this.board.fr4,
