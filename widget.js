@@ -65,16 +65,6 @@ cprequire_test(["inline:com-chilipeppr-widget-pcb"], function(pcbw) {
             pcbw.init(true);
         });
     });
-    
-    // chilipeppr.load(
-    //     "#com-chilipeppr-ws-eagle",
-    //     "http://raw.githubusercontent.com/chilipeppr/widget-eagle/master/auto-generated-widget.html",
-    //     function() {
-    //         cprequire(["inline:com-chilipeppr-widget-eagle"], function(eagle) {
-    //             eagle.init();
-    //         });
-    //     }
-    // );
     $('body').prepend('<div id="test-drag-drop"></div>');
     chilipeppr.load("#test-drag-drop", "http://raw.githubusercontent.com/chilipeppr/elem-dragdrop/master/auto-generated-widget.html",
 

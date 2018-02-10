@@ -289,16 +289,6 @@ cprequire_test(["inline:com-chilipeppr-widget-pcb"], function(pcbw) {
             pcbw.init(true);
         });
     });
-    
-    // chilipeppr.load(
-    //     "#com-chilipeppr-ws-eagle",
-    //     "http://raw.githubusercontent.com/chilipeppr/widget-eagle/master/auto-generated-widget.html",
-    //     function() {
-    //         cprequire(["inline:com-chilipeppr-widget-eagle"], function(eagle) {
-    //             eagle.init();
-    //         });
-    //     }
-    // );
     $('body').prepend('<div id="test-drag-drop"></div>');
     chilipeppr.load("#test-drag-drop", "http://raw.githubusercontent.com/chilipeppr/elem-dragdrop/master/auto-generated-widget.html",
 
@@ -936,7 +926,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
 
         </div>
 
-        <div class="zhigh hidden" id="com-chilipeppr-ws-pcb">PCB BRD Here</div>
+        <div class="zhigh hidden" id="com-chilipeppr-widget-pcb">PCB BRD Here</div>
         <div  class="com-chilipeppr-widget-pcb-info panel hidden">
             <table class="table table-bordered table-striped table-condensed">
                 <tbody>
@@ -5375,7 +5365,7 @@ function kiCadXmlParser(){
 
         </div>
 
-        <div class="zhigh hidden" id="com-chilipeppr-ws-pcb">PCB BRD Here</div>
+        <div class="zhigh hidden" id="com-chilipeppr-widget-pcb">PCB BRD Here</div>
         <div  class="com-chilipeppr-widget-pcb-info panel hidden">
             <table class="table table-bordered table-striped table-condensed">
                 <tbody>
