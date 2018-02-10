@@ -248,7 +248,7 @@ requirejs.config({
     http://chilipeppr.com
     */
     paths: {
-        Three: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three',
+        Three: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three',
         ThreeTextGeometry: '//i2dcui.appspot.com/js/three/TextGeometry',
         ThreeFontUtils: '//i2dcui.appspot.com/js/three/FontUtils',
         ThreeHelvetiker: '//i2dcui.appspot.com/js/three/threehelvetiker',
@@ -716,6 +716,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             var droppedFile = Board.supportedFiles.find(function(f){
                 return f.signature.test(data);
             });
+            
             if (droppedFile !== undefined) {
                 console.info("PCBW","we have " + droppedFile.type + " board file!");
                 // this.colorSignal = 9249571;
@@ -998,10 +999,14 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
 
 </html>
 , 'i');
-                    return info.name.match(extRegEx);
+                    if(info.name.match(extRegEx)) return f; else return null;
                 });
+                console.log("droppedFile", droppedFile);
                 if (droppedFile !== undefined) {
-                    chilipeppr.publish('/com-chilipeppr-elem-flashmsg/flashmsg', "Error Loading Board File", "Looks like you dragged in supported board file, but it seems to be in binary. You can open this file in Eagle and then re-save it to a new file to create a text version of your Eagle BRD file.", 15 * 1000);
+                    if(droppedFile.type == Board.types.eagle)
+                        chilipeppr.publish('/com-chilipeppr-elem-flashmsg/flashmsg', "Error Loading Eagle BRD File", "Looks like you dragged in an Eagle BRD file, but it seems to be in binary. You can open this file in Eagle and then re-save it to a new file to create a text version of your Eagle BRD file.", 15 * 1000);
+                    else if (droppedFile.type == Board.types.kiCad)
+                        chilipeppr.publish('/com-chilipeppr-elem-flashmsg/flashmsg', "Error Loading KiCad File", "Looks like you dragged in a file with kicad_pcb extension, but it seems to be in unsupported format.", 15 * 1000);
                     return false;
                 }
             }
