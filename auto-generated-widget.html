@@ -383,12 +383,6 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
          * All widgets should have an init method. It should be run by the
          * instantiating code like a workspace or a different widget.
          */
-        getElementId: function(id){
-            return '#' + this.id + ' #' + id;
-        },
-        getElementClass: function(id){
-            return '#' + this.id + ' .' + id;
-        },
         init: function(doMyOwnDragDrop) {
             // the workspace may want to handle the drag drop
             // but when in dev mode it makes sense for us to do our own
@@ -410,6 +404,12 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.init3d();
             //this.open();
             this.setupMouseOver();
+        },
+        getElementId: function(id){
+            return '#' + this.id + ' #' + id;
+        },
+        getElementClass: function(id){
+            return '#' + this.id + ' .' + id;
         },
         /**
          * Try to get a reference to the 3D viewer.
@@ -3027,8 +3027,8 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 {X: -w, Y: -t },
                 {X: -w, Y:  t }
             ];
-        }
-    };
+        },
+    }
 });
 
 
