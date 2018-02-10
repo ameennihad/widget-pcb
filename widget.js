@@ -192,17 +192,17 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
          */
         init3d: function () {
             this.get3dObj();
-            if (this.obj3d == null) {
+            if (this.obj3d === null) {
                 console.info("PCBW","loading 3d scene failed, try again in 1 second");
                 var attempts = 1;
                 var that = this;
                 setTimeout(function () {
                     that.get3dObj();
-                    if (that.obj3d == null) {
+                    if (that.obj3d === null) {
                         attempts++;
                         setTimeout(function () {
                             that.get3dObj();
-                            if (that.obj3d == null) {
+                            if (that.obj3d === null) {
                                 console.info("PCBW","giving up on trying to get 3d");
                             } else {
                                 console.info("PCBW","succeeded on getting 3d after attempts:", attempts);
@@ -364,7 +364,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             $('#' + this.id + ' .panel-footer').removeClass('hidden');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
-            if (!(evt == null)) {
+            if (evt !== null) {
                 this.options.showBody = true;
                 this.saveOptionsLocalStorage();
             }
@@ -385,7 +385,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             $('#' + this.id + ' .panel-footer').addClass('hidden');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-down');
-            if (!(evt == null)) {
+            if (evt !== null) {
                 this.options.showBody = false;
                 this.saveOptionsLocalStorage();
             }
@@ -430,7 +430,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         statusEl: null, // cache the status element in DOM
         status: function (txt) {
             console.info("PCBW","status. txt:", txt);
-            if (this.statusEl == null) this.statusEl = $('#' + this.id + '-status');
+            if (this.statusEl === null) this.statusEl = $('#' + this.id + '-status');
             var len = this.statusEl.val().length;
             if (len > 30000) {
                 console.info("PCBW","truncating status area text");
@@ -462,7 +462,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             
             // let's add our board content outside the scope of the Gcode content
             // so that we have it stay while the Gcode 3D Viewer still functions
-            if (this.mySceneGroup == null) {
+            if (this.mySceneGroup === null) {
                 this.mySceneGroup = new THREE.Group();
                 this.obj3d.add(this.mySceneGroup);
             }
@@ -471,7 +471,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.obj3dmeta.widget.wakeAnimate();
         },
         sceneRemove: function (obj) {
-            if (this.mySceneGroup != null)
+            if (this.mySceneGroup !== null)
                 this.mySceneGroup.remove(obj);
             this.obj3dmeta.widget.wakeAnimate();
         },
@@ -573,10 +573,10 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.infoArea.addClass('hidden');
             
             // reset opacities
-            if (this.lastIntersect != null) {
+            if (this.lastIntersect !== null) {
                 // console.log("lastIntersect:", this.lastIntersect);
                 // also reset opacity for other items we hilited
-                // if (this.lastIntersectOtherMaterials != null) {
+                // if (this.lastIntersectOtherMaterials !== null) {
                 //     //console.log("lastIntersectOtherMaterials:", this.lastIntersectOtherMaterials);
                 //     this.lastIntersectOtherMaterials.forEach(function(material) {
                 //         material.opacity = material.opacityBackup;
@@ -626,9 +626,9 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.raycaster.ray.set(this.obj3dmeta.camera.position, vector);
             var intersects = this.raycaster.intersectObjects(this.intersectObjects, true);
             // reset last object
-            if (this.lastIntersect != null) {
+            if (this.lastIntersect !== null) {
                 // also reset opacity for other items we hilited
-                // if (this.lastIntersectOtherMaterials != null) {
+                // if (this.lastIntersectOtherMaterials !== null) {
                 //     this.lastIntersectOtherMaterials.forEach(function(material) {
                 //         material.opacity = material.opacityBackup;
                 //     });
@@ -668,7 +668,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                             {title:"Wire Width", data: ud.width.toFixed(2) + " mm"},
                             {title:"Milling Width", data: ud.millingWidth.toFixed(2) + " mm"},
                             {title:"Millin Tool", data: ud.tool},
-                            {title:"Operation Type", data: ud.dimensionType == 0?"Outside path":ud.dimensionType == 1?"Inside path":"On path"}
+                            {title:"Operation Type", data: ud.dimensionType === 0?"Outside path":ud.dimensionType == 1?"Inside path":"On path"}
                         ]);
                     }
                     else if(ud.type == "signal"){
@@ -738,19 +738,20 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 //     return;
                 // }
             }
-            
+            var droppedFile;
             if (validFile) {
                 // make sure this file is a supported board
-                var droppedFile = Board.supportedFiles.find(function(f){
+                droppedFile = Board.supportedFiles.find(function(f){
                     return f.signature.test(file);
                 });
                 if (droppedFile === undefined) {
                     chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Error Loading board file", "It looks like you had a previous board file, but it doesn't seem to be the correct format.", 10 * 1000);
                     validFile = false;
                 }
+                else
+                    chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Opening " + droppedFile.type + " BRD", "Parsing " + droppedFile.type + " file and do 3D rendering.", 3000, true);
             }
             
-            if(validFile) chilipeppr.publish("/com-chilipeppr-elem-flashmsg/flashmsg", "Opening " + droppedFile.type + " BRD", "Parsing " + droppedFile.type + " file and do 3D rendering.", 3000, true);
             this.clearBoard();
             this.clear3dViewer();
             this.readFr4Values();
@@ -868,34 +869,34 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             var item;
             
             item = $(this.getElementClass('blank-pcb-x'));
-            if (item.val() == "") item.val(this.fr4.x); else this.fr4.x = parseFloat(item.val());
+            if (item.val() === "") item.val(this.fr4.x); else this.fr4.x = parseFloat(item.val());
             
             item = $(this.getElementClass('blank-pcb-y'));
-            if (item.val() == "") item.val(this.fr4.y); else this.fr4.y = parseFloat(item.val());
+            if (item.val() === "") item.val(this.fr4.y); else this.fr4.y = parseFloat(item.val());
             
             item = $(this.getElementClass('blank-pcb-width'));
-            if (item.val() == "") item.val(this.fr4.width); else this.fr4.width = parseFloat(item.val());
+            if (item.val() === "") item.val(this.fr4.width); else this.fr4.width = parseFloat(item.val());
             
             item = $(this.getElementClass('blank-pcb-height'));
-            if (item.val() == "") item.val(this.fr4.height); else this.fr4.height = parseFloat(item.val());
+            if (item.val() === "") item.val(this.fr4.height); else this.fr4.height = parseFloat(item.val());
             
             item = $(this.getElementClass('blank-pcb-depth'));
-            if (item.val() == "") item.val(this.fr4.depth); else this.fr4.depth = parseFloat(item.val());
+            if (item.val() === "") item.val(this.fr4.depth); else this.fr4.depth = parseFloat(item.val());
                         
             item = $(this.getElementClass('blank-pcb-padding-l'));
-            if (item.val() == "") item.val(this.fr4.paddingL); else this.fr4.paddingL = parseFloat(item.val());
+            if (item.val() === "") item.val(this.fr4.paddingL); else this.fr4.paddingL = parseFloat(item.val());
             
             item = $(this.getElementClass('blank-pcb-padding-b'));
-            if (item.val() == "") item.val(this.fr4.paddingB); else this.fr4.paddingB = parseFloat(item.val());
+            if (item.val() === "") item.val(this.fr4.paddingB); else this.fr4.paddingB = parseFloat(item.val());
             
             item = $(this.getElementClass('blank-pcb-spacing'));
-            if (item.val() == "") item.val(this.fr4.spacing); else this.fr4.spacing = parseFloat(item.val());
+            if (item.val() === "") item.val(this.fr4.spacing); else this.fr4.spacing = parseFloat(item.val());
         },
         readRegHoleGcodeValues: function(){
             var item, v, min, max;
             
             item = $(this.getElementClass('reg-holes-depth'));
-            if (item.val() == "") item.val(this.regHoleGcodePara.depth); 
+            if (item.val() === "") item.val(this.regHoleGcodePara.depth); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min); max = parseFloat(item[0].max);
                 if(v>max) {v = max; item.val(v);}
@@ -904,7 +905,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             }
             
             item = $(this.getElementClass('reg-holes-clearance'));
-            if (item.val() == "") item.val(this.regHoleGcodePara.clearance); 
+            if (item.val() === "") item.val(this.regHoleGcodePara.clearance); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
@@ -912,14 +913,14 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             }
             
             item = $(this.getElementClass('reg-holes-feedrate'));
-            if (item.val() == "") item.val(this.regHoleGcodePara.feedrate); 
+            if (item.val() === "") item.val(this.regHoleGcodePara.feedrate); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
                 this.regHoleGcodePara.feedrate = v;
             }
             item = $(this.getElementClass('reg-holes-spindle-rpm'));
-            if (item.val() == "") item.val(this.regHoleGcodePara.spindleRPM); 
+            if (item.val() === "") item.val(this.regHoleGcodePara.spindleRPM); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
@@ -932,7 +933,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.regHoles.pattern = parseInt($(this.getElementId('reg-holes-pattern')).val());
             var item, v, min, max;
             item = $(this.getElementClass('reg-holes-diameter'));
-            if (item.val() == "") item.val(this.regHoles.diameter); 
+            if (item.val() === "") item.val(this.regHoles.diameter); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min); max = parseFloat(item[0].max);
                 if(v>max) {v = max; item.val(v);}
@@ -941,7 +942,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             }
             
             item = $(this.getElementClass('reg-holes-distance'));
-            if (item.val() == "") item.val(this.regHoles.distance); 
+            if (item.val() === "") item.val(this.regHoles.distance); 
             else {
                 v = parseFloat(item.val()); min = parseFloat(item[0].min); max = parseFloat(item[0].max);
                 if(v>max) {v = max; item.val(v);}
@@ -1055,7 +1056,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         },
         onChangeRenderSignals: function(layerIndex) {
             if(!this.boards3d) return;
-            var renderSignals = layerIndex == 0?
+            var renderSignals = layerIndex === 0?
                 $(this.getElementId('renderSignalsT')).prop ("checked"):
                 $(this.getElementId('renderSignalsB')).prop ("checked");
             var renderPolygons = $(this.getElementId('renderPolygons')).prop ("checked");
@@ -1126,68 +1127,69 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             }
         },
         onChangeBlankBoardParamenters: function() {
-            var item = $(this.getElementClass('blank-pcb-x'));
-            if (item.val() == "") item.val(this.board.fr4.x); else this.board.fr4.x = parseFloat(item.val());
+            var item, v, min;
+            item = $(this.getElementClass('blank-pcb-x'));
+            if (item.val() === "") item.val(this.fr4.x); else this.fr4.x = parseFloat(item.val());
             
             item = $(this.getElementClass('blank-pcb-y'));
-            if (item.val() == "") item.val(this.board.fr4.y); else this.board.fr4.y = parseFloat(item.val());
+            if (item.val() === "") item.val(this.fr4.y); else this.fr4.y = parseFloat(item.val());
             
             item = $(this.getElementClass('blank-pcb-width'));
-            if (item.val() == "") item.val(this.board.fr4.width); 
+            if (item.val() === "") item.val(this.fr4.width); 
             else {
-                var v = parseFloat(item.val()), min = parseFloat(item[0].min);
+                v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
-                this.board.fr4.width = v;
+                this.fr4.width = v;
             }
             
             item = $(this.getElementClass('blank-pcb-height'));
-            if (item.val() == "") item.val(this.board.fr4.height); 
+            if (item.val() === "") item.val(this.fr4.height); 
             else {
-                var v = parseFloat(item.val()), min = parseFloat(item[0].min);
+                v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
-                this.board.fr4.height = v;
+                this.fr4.height = v;
             }
             
             item = $(this.getElementClass('blank-pcb-depth'));
-            if (item.val() == "") item.val(this.board.fr4.depth); 
+            if (item.val() === "") item.val(this.fr4.depth); 
             else {
-                var v = parseFloat(item.val()), min = parseFloat(item[0].min);
+                v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
-                this.board.fr4.depth = v;
+                this.fr4.depth = v;
             }
             
             item = $(this.getElementClass('blank-pcb-padding-l'));
-            if (item.val() == "") item.val(this.board.fr4.paddingL); 
+            if (item.val() === "") item.val(this.fr4.paddingL); 
             else {
-                var v = parseFloat(item.val()), min = parseFloat(item[0].min);
+                v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
-                this.board.fr4.paddingL = v;
+                this.fr4.paddingL = v;
             }
             
             item = $(this.getElementClass('blank-pcb-padding-b'));
-            if (item.val() == "") item.val(this.board.fr4.paddingB); 
+            if (item.val() === "") item.val(this.fr4.paddingB); 
             else {
-                var v = parseFloat(item.val()), min = parseFloat(item[0].min);
+                v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
-                this.board.fr4.paddingB = v;
+                this.fr4.paddingB = v;
             }
             
             item = $(this.getElementClass('blank-pcb-spacing'));
-            if (item.val() == "") item.val(this.board.fr4.spacing); 
+            if (item.val() === "") item.val(this.fr4.spacing); 
             else {
-                var v = parseFloat(item.val()), min = parseFloat(item[0].min);
+                v = parseFloat(item.val()); min = parseFloat(item[0].min);
                 if(v<min) {v = min; item.val(v);}
-                this.board.fr4.spacing = v;
+                this.fr4.spacing = v;
             }
             
             //this.adjustBoards3dPositions();
             this.render3dBoard();
-            this.adjustBoards3dPositions();
-            // if(this.blankBoardSceneGroup != null) this.sceneRemove(this.blankBoardSceneGroup);
+            if(this.boards3d) this.adjustBoards3dPositions();
+            // if(this.blankBoardSceneGroup !== null) this.sceneRemove(this.blankBoardSceneGroup);
             
             // this.draw3dBlankBoard();
             
-            // if(this.regHolesSceneGroup != null) this.sceneRemove(this.regHolesSceneGroup);
+            // if(this.regHolesSceneGroup !== null) this.sceneRemove(this.regHolesSceneGroup);
             
             //this.regHoles.holes = this.getRegHoles();
             // this.draw3dRegHoles();
@@ -1202,7 +1204,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.readRegHoleValues();
             
             this.render3dBoard();
-            this.adjustBoards3dPositions();
+            if(this.boards3d) this.adjustBoards3dPositions();
             //this.regHoles.holes = this.getRegHoles();
             //this.exportGcodeRegistrationHoles();
         },
@@ -1274,7 +1276,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 }
                 else{
                     holePath = PATHS.createOvalPath(0, 0, hole.drillX, hole.drillY, 32);
-                    if(hole.revolve != 0) PATHS.adjustPath(holePath, hole.revolve, 0, 0);
+                    if(hole.revolve !== 0) PATHS.adjustPath(holePath, hole.revolve, 0, 0);
                     var tool = this.tools.getDrillBit(hole.drillX);
                     console.log(tool);
                     if(tool != TOOLS.bitNotFound){
@@ -1337,13 +1339,13 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.board.dimensions.forEach(function(dimension){
                 var path = dimension.path;
                 
-                if(dimension.millDiameter != 0){
+                if(dimension.millDiameter !== 0){
                     
                     var paths = new ClipperLib.Paths();
                     dimension.outerPath = [];
                     dimension.innerPath = [];
                     if((dimension.width < this.minWireWidthToMill) && (dimension.type != -1)){//Closed path with wire width = zero
-                        paths = PATHS.getInflatePaths([path], dimension.type == 0? dimension.millDiameter/2:-dimension.millDiameter/2);
+                        paths = PATHS.getInflatePaths([path], dimension.type === 0? dimension.millDiameter/2:-dimension.millDiameter/2);
                         if(paths.length > 0){
                             path = [];
                             paths[0].forEach(function(v){
@@ -1379,7 +1381,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             //***************************************************
             var clipOuterPaths = [], clipInnerPaths = [];
             this.board.dimensions.forEach(function(dimension){
-                if(dimension.type == 0){
+                if(dimension.type === 0){
                     clipOuterPaths.push(dimension.path);
                 }
                 else{
@@ -1393,7 +1395,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             var polyRestrictsTop = [], polyRestrictsBottom = [];
             //TODO: Create Restict paths and consider them as cutouts
             this.board.restricts.forEach(function(restrict){
-                if(restrict.type == 0){
+                if(restrict.type === 0){
                     var rPaths = PATHS.getInflatePaths([restrict.path], 0);
                     if(restrict.layer == 41){
                         polyRestrictsTop.push(rPaths[0]);
@@ -1521,7 +1523,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             });
             var wireMat = new THREE.LineBasicMaterial({
                 color: 0xCB6D51,
-                opacity: .2
+                opacity: 0.2
                 });
             var boardMat = new THREE.MeshPhongMaterial({
                 color: 0xDA8A67,
@@ -1539,7 +1541,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 //***************************************
                 var dPaths = [], dHoles = [];
                 this.board.dimensions.forEach(function(dimension){
-                    if(dimension.type == 0)
+                    if(dimension.type === 0)
                         dPaths = dPaths.concat(dimension.innerPath);
                     else
                         dHoles = dHoles.concat(dimension.outerPath);
@@ -1696,7 +1698,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 
                 wireMat = new THREE.LineBasicMaterial({
                     color: 0xCB6D51,
-                    opacity: .2
+                    opacity: 0.2
                 }),
                 boardMat = new THREE.MeshPhongMaterial({
                     color: 0xDA8A67,
@@ -1718,7 +1720,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             holePaths = this.getRegHolePaths();
             if(this.board){
                 this.board.dimensions.forEach(function(dimension){
-                    if(dimension.type == 0){
+                    if(dimension.type === 0){
                         this.boards3d.forEach(function(board3d){
                             dimension.outerPath.forEach(function(dPath){
                                 var path = this.copyPath(dPath);
@@ -1917,7 +1919,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             var pattern = this.regHoles.pattern;
             var count = Math.round(pattern/100);
             var onSides = Math.round((pattern - 100 * count)/10) == 1;
-            var v = (pattern - 100 * count - 10 * onSides) == 0;
+            var v = (pattern - 100 * count - 10 * onSides) === 0;
             
             var x = this.fr4.x,
                 y = this.fr4.y,
@@ -1944,7 +1946,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             var pattern = this.regHoles.pattern;
             var count = Math.round(pattern/100);
             var onSides = Math.round((pattern - 100 * count)/10) == 1;
-            var v = (pattern - 100 * count - 10 * onSides) == 0;
+            var v = (pattern - 100 * count - 10 * onSides) === 0;
             
             var x = -this.fr4.width  / 2,
                 y = -this.fr4.height / 2,
@@ -2009,8 +2011,8 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 // if ((cdi.type == -2) ||
                 //     (!this.board.millingLayerUsed && cdi.layer == mLayerNumber) ||
                 //     (!this.board.dimensionLayerUsed && cdi.layer == dLayerNumber)  ||
-                //     (cdi.millDiameter == 0)) continue;
-                if ((cdi.type == -2) || !this.board.isDimensionLayer(cdi.layer) || (cdi.millDiameter == 0))
+                //     (cdi.millDiameter === 0)) continue;
+                if ((cdi.type == -2) || !this.board.isDimensionLayer(cdi.layer) || (cdi.millDiameter === 0))
                     continue;
                 var alongPath = cdi.type == -1 || (cdi.type >= 0 && cdi.width >= this.minWireWidthToMill);
                 var hasCurves = cdi.curves.length > 0;
@@ -2081,7 +2083,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                         var isThisConcave = (or && thisCurveAngle<0) || (!or && thisCurveAngle>0);
                         var isNextConcave = (or && nextCurveAngle<0) || (!or && nextCurveAngle>0);
                         if(isThisConcave) {a2 = a2 - Math.PI; a1 = a1 - Math.PI;}
-                        if(isNextConcave) {a3 = a3 - Math.PI};
+                        if(isNextConcave) {a3 = a3 - Math.PI;}
                         var a4 = a3 - a2;
                         var a5 = (a2 - a3 + Math.PI)/2;
                         var s4 = Math.sin(a4);
@@ -2266,10 +2268,10 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             paths.forEach(function(path){
                 var shape = new THREE.Shape();
                 for (var i = 0; i < path.length; i++) {
-                    if (i == 0) shape.moveTo(path[i].X, path[i].Y);
+                    if (i === 0) shape.moveTo(path[i].X, path[i].Y);
                     else shape.lineTo(path[i].X, path[i].Y);
                 }
-                if (holePaths !== undefined && holePaths != null) {
+                if (holePaths !== undefined && holePaths !== null) {
                     if (!(Array.isArray(holePaths))) {
                         holePaths = [holePaths];
                     }
@@ -2277,7 +2279,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                     holePaths.forEach(function(holePath){
                         var hole = new THREE.Path();
                         for (var j = 0; j < holePath.length; j++) {
-                            if (j == 0) hole.moveTo(holePath[j].X, holePath[j].Y);
+                            if (j === 0) hole.moveTo(holePath[j].X, holePath[j].Y);
                             else hole.lineTo(holePath[j].X, holePath[j].Y);
                         }
                         shape.holes.push(hole);
@@ -2308,14 +2310,14 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             polyTree.forEach(function(pti) {
                 var shape = new THREE.Shape();
                 for (var i = 0; i < pti.path.length; i++) {
-                    if (i == 0) shape.moveTo(pti.path[i].X, pti.path[i].Y);
+                    if (i === 0) shape.moveTo(pti.path[i].X, pti.path[i].Y);
                     else shape.lineTo(pti.path[i].X, pti.path[i].Y);
                 }
                 pti.holes.forEach(function(holePath){
                     var hole = new THREE.Path();
                     // if(!ClipperLib.Clipper.Orientation(holePath)) holePath.reverse();
                     for (var j = 0; j < holePath.length; j++) {
-                        if (j == 0) hole.moveTo(holePath[j].X, holePath[j].Y);
+                        if (j === 0) hole.moveTo(holePath[j].X, holePath[j].Y);
                         else hole.lineTo(holePath[j].X, holePath[j].Y);
                     }
                     shape.holes.push(hole);
@@ -2342,21 +2344,22 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         createMeshFromPath: function (outerPath, material, holePaths, depth){
 
             var group = new THREE.Object3D();
+            var j, pt;
             //for (var i = 0; i < paths.length; i++) {
             var shape = new THREE.Shape();
-            for (var j = 0; j < outerPath.length; j++) {
-                var pt = outerPath[j];
-                if (j == 0) shape.moveTo(pt.X, pt.Y); else shape.lineTo(pt.X, pt.Y);
+            for (j = 0; j < outerPath.length; j++) {
+                pt = outerPath[j];
+                if (j === 0) shape.moveTo(pt.X, pt.Y); else shape.lineTo(pt.X, pt.Y);
             }
-            if (holePaths !== undefined && holePaths != null) {
+            if (holePaths !== undefined && holePaths !== null) {
                 if (!(Array.isArray(holePaths))) holePaths = [holePaths];
                 
                 for (var hi = 0; hi < holePaths.length; hi++) {
                     var hp = holePaths[hi];
                     var hole = new THREE.Path();
-                    for (var j = 0; j < hp.length; j++) {
-                        var pt = hp[j];
-                        if (j == 0) hole.moveTo(pt.X, pt.Y);
+                    for (j = 0; j < hp.length; j++) {
+                        pt = hp[j];
+                        if (j === 0) hole.moveTo(pt.X, pt.Y);
                         else hole.lineTo(pt.X, pt.Y);
                     }
                     shape.holes.push(hole);
@@ -2383,7 +2386,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 for(var vidx = 0; vidx < polygon.vertices.length ; vidx++){
                     var v0 = polygon.vertices[vidx];
                     var v1 = (polygon.vertices.length == vidx+1)?polygon.vertices[0]:polygon.vertices[vidx+1];
-                    if("curve" in v0 && v0.curve != 0){
+                    if("curve" in v0 && v0.curve !== 0){
                         var cPoints = PATHS.createCurvePoints(v0.x, v0.y, v1.x, v1.y, v0.curve);
                         cPoints.forEach(function(p){
                             polygonPath.push({X: p.x, Y: p.y});
@@ -2413,9 +2416,9 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 path = PATHS.createCircularPath(0, 0, pad.sizeX/2, 8);
                 
 
-            if(pad.revolve != 0) PATHS.adjustPath(path, pad.revolve, 0, 0);
-            
-            if(this.board.packagesByName !== undefined && this.board.packagesByName[pad.pkg] != null){
+            if(pad.revolve !== 0) PATHS.adjustPath(path, pad.revolve, 0, 0);
+            console.log(this.board.packagesByName[pad.pkg]);
+            if(this.board.packagesByName !== undefined && this.board.packagesByName[pad.pkg] !== undefined){
                 var polys = this.board.packagesByName[pad.pkg].polygons;
                 if(polys !== undefined && polys.length > 0)
                     path = this.getPadPathIntersectedWithPolygon(polys, path, layerNumber);
@@ -2430,7 +2433,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             if(pad.type == "thru_hole"){
                 if(pad.drillShape == "oval"){
                     hole = PATHS.createOvalPath(0, 0, pad.drillX, pad.drillY);
-                    if(pad.revolve != 0) PATHS.adjustPath(hole, pad.revolve, 0, 0);
+                    if(pad.revolve !== 0) PATHS.adjustPath(hole, pad.revolve, 0, 0);
                 }
                 else
                     hole = PATHS.createCircularPath(0, 0, pad.drill/2);
@@ -2457,7 +2460,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         createWirePath: function(x1, y1, x2, y2, width, curve){
             var angle = Math.atan2(y1-y2, x1-x2),
                 path = [];
-            if(curve == 0){
+            if(curve === 0){
                 var dx = width*Math.sin(angle)/2,
                     dy = width*Math.cos(angle)/2;
                     
@@ -2498,7 +2501,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             var crossPath = this.createCrossPath(polygon.thermalsWidth);
             if('rotation' in pad){
                 var revolve = this.board.type == Board.types.kiCad && pad.shape == 'circle'? Math.PI / 4 : pad.revolve;
-                if(revolve != 0) PATHS.adjustPath(crossPath, revolve, 0, 0);
+                if(revolve !== 0) PATHS.adjustPath(crossPath, revolve, 0, 0);
                 
                 var r = Math.sqrt(x * x + y * y);
                 var angle = pad.rotation + Math.atan2(y, x);
@@ -2524,20 +2527,20 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             return [
                 {X: -w, Y:  t },
                 {X: -t, Y:  t },
-                {X: -t, Y:  w },
-                {X:  t, Y:  w },
+                {X: -t, Y:  h },
+                {X:  t, Y:  h },
                 {X:  t, Y:  t },
                 {X:  w, Y:  t },
                 {X:  w, Y: -t },
                 {X:  t, Y: -t },
-                {X:  t, Y: -w },
-                {X: -t, Y: -w },
+                {X:  t, Y: -h },
+                {X: -t, Y: -h },
                 {X: -t, Y: -t },
                 {X: -w, Y: -t },
                 {X: -w, Y:  t }
             ];
         },
-    }
+    };
 });
 
 
@@ -2547,7 +2550,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
 function TOOLS(){
 }
 
-TOOLS.bitNotFound == 'X00';
+TOOLS.bitNotFound = 'X00';
 
 TOOLS.prototype.cuttingBits = [
     {key: 'C00', diameter: 1.0, available: true},
@@ -2576,7 +2579,7 @@ TOOLS.prototype.getDrillBit = function(diameter){
             return drillBit;
     }, this);
     return TOOLS.bitNotFound;
-}
+};
 
 
 // ****************************************************************************
@@ -2600,13 +2603,13 @@ PATHS.scaleDownPath = function(path, scale){
             Y: vertex.Y / scale});
     });
     return returnPath;
-}
+};
 PATHS.getInflatePaths = function(paths, delta, joinType){
     var scale = 10000;
     ClipperLib.JS.ScaleUpPaths(paths, scale);
     var miterLimit = 2;
     var arcTolerance = 10;
-    joinType = joinType ? joinType : ClipperLib.JoinType.jtRound
+    joinType = joinType ? joinType : ClipperLib.JoinType.jtRound;
     var co = new ClipperLib.ClipperOffset(miterLimit, arcTolerance);
     co.AddPaths(paths, joinType, ClipperLib.EndType.etClosedPolygon);
     var offsetted_paths = new ClipperLib.Paths();
@@ -2621,13 +2624,13 @@ PATHS.getInflatePaths = function(paths, delta, joinType){
     }
     ClipperLib.JS.ScaleDownPaths(paths, scale);
     return offsetted_paths;
-}
+};
 PATHS.getInflateOpenPaths = function (paths, delta, joinType) {
     var scale = 10000;
     ClipperLib.JS.ScaleUpPaths(paths, scale);
     var miterLimit = 2;
     var arcTolerance = 10;
-    joinType = joinType ? joinType : ClipperLib.JoinType.jtRound
+    joinType = joinType ? joinType : ClipperLib.JoinType.jtRound;
     var co = new ClipperLib.ClipperOffset(miterLimit, arcTolerance);
     co.AddPaths(paths, joinType, ClipperLib.EndType.etRound);
     var offsetted_paths = new ClipperLib.Paths();
@@ -2643,7 +2646,7 @@ PATHS.getInflateOpenPaths = function (paths, delta, joinType) {
     ClipperLib.JS.ScaleDownPaths(paths, scale);
     return offsetted_paths;
 
-}
+};
 PATHS.getDifferenceOfPaths = function (subj_paths, clip_paths) {
     var cpr = new ClipperLib.Clipper();
     var scale = 100000;
@@ -2674,7 +2677,7 @@ PATHS.getDifferenceOfPaths = function (subj_paths, clip_paths) {
         node = node.GetNext();
     }
     return paths;
-}
+};
 PATHS.getUnionOfPaths = function (subj_paths) {
     var cpr = new ClipperLib.Clipper();
     var scale = 100000;
@@ -2693,7 +2696,7 @@ PATHS.getUnionOfPaths = function (subj_paths) {
     }
     ClipperLib.JS.ScaleDownPaths(subj_paths, scale);
     return solution_paths;
-}
+};
 PATHS.getIntersectionOfPaths = function (subj_paths, clip_paths) {
     var cpr = new ClipperLib.Clipper();
     var scale = 10000;
@@ -2710,10 +2713,10 @@ PATHS.getIntersectionOfPaths = function (subj_paths, clip_paths) {
     ClipperLib.JS.ScaleDownPaths(clip_paths, scale);
     ClipperLib.JS.ScaleDownPaths(subj_paths, scale);
     return solution_paths;
-}
+};
 PATHS.unionPathsIfIntersected = function(path1, path2){
     var pathS = this.getIntersectionOfPaths([path1], [path2]);
-    if(pathS.length != 0){
+    if(pathS.length !== 0){
         pathS = this.getUnionOfPaths([path1, path2]);
         var path = [];
         pathS[0].forEach(function(vertex){
@@ -2724,14 +2727,14 @@ PATHS.unionPathsIfIntersected = function(path1, path2){
         return path.reverse();
     }
     return path1;
-}
+};
 PATHS.clipPathsIfIntersected = function(paths, clipPaths){
     var pathS = this.getIntersectionOfPaths(paths, clipPaths);
-    if(pathS.length != 0){
-        return pathS
+    if(pathS.length !== 0){
+        return pathS;
     }
     return paths;
-}
+};
 PATHS.createCurvePoints = function (x1, y1, x2, y2, curve){
     var segmentLength = 1;//parseFloat($('#com-chilipeppr-widget-eagle .curve-resolution').val());
     segmentLength = Math.min(segmentLength, 1.0);
@@ -2757,7 +2760,7 @@ PATHS.createCurvePoints = function (x1, y1, x2, y2, curve){
     var points = arcCurve.getSpacedPoints( segments );
 
     return points;
-}
+};
 PATHS.createCircularPath = function (x, y, radius, seg){
     seg = seg || 0;
     var segments = seg>0? seg: Math.max(Math.round(2 * Math.PI * radius) * 10, 8),
@@ -2769,7 +2772,7 @@ PATHS.createCircularPath = function (x, y, radius, seg){
     }
     path.push({X: path[0].X, Y: path[0].Y});
     return path;
-}
+};
 PATHS.createOvalPath = function (x, y, sizeX, sizeY, seg){
     seg = seg || 0;
     var radius = Math.min(sizeX, sizeY)/2;
@@ -2790,14 +2793,14 @@ PATHS.createOvalPath = function (x, y, sizeX, sizeY, seg){
         path.push({X: x + dx - radius * Math.cos(a),
                    Y: y + dy - radius * Math.sin(a)});
     }
-    for(var a = ma; a > ea; a-=step){
+    for(a = ma; a > ea; a-=step){
         
         path.push({X: x - dx - radius * Math.cos(a),
                    Y: y - dy - radius * Math.sin(a)});
     }
     path.push({X: path[0].X, Y: path[0].Y});
     return path;
-}
+};
 PATHS.createArcPath = function(x, y, radius, aStartAngle, aEndAngle, seg){
     seg = seg || 0;
     var segments = seg>0? seg: Math.max(Math.round(2 * Math.PI * radius) * 10, 8),
@@ -2810,12 +2813,12 @@ PATHS.createArcPath = function(x, y, radius, aStartAngle, aEndAngle, seg){
                    Y: y + radius * Math.sin(a)});
     }
     return path;
-}
+};
 PATHS.createRectangularPath = function(x, y, w, h, roundness){
     var dx = w/2,
         dy = h/2,
         path = [];
-    if(roundness == 0){
+    if(roundness === 0){
         path.push({X: x - dx, Y: y - dy});
         path.push({X: x - dx, Y: y + dy});
         path.push({X: x + dx, Y: y + dy});
@@ -2839,9 +2842,9 @@ PATHS.createRectangularPath = function(x, y, w, h, roundness){
     }
     path.push({X: path[0].X, Y: path[0].Y});
     return path;
-}
+};
 PATHS.adjustPath = function(path, rotation, positionX, positionY){
-    if(rotation == 0){
+    if(rotation === 0){
         path.forEach(function(vertex){
             vertex.X += positionX;
             vertex.Y += positionY;
@@ -2855,13 +2858,13 @@ PATHS.adjustPath = function(path, rotation, positionX, positionY){
             vertex.Y = positionY + r * Math.sin(angle);
         });
     }
-}
+};
 PATHS.mirrorPath = function(path, centerX, centerY){
     path.forEach(function(vertex){
         vertex.X = centerX - (vertex.X - centerX);
     });
     path.reverse();
-}
+};
 
 
 
@@ -3066,7 +3069,7 @@ Board.prototype.wiresConnectedB = function(w1, w2){
     return false;
 };
 
-Board.prototype.drawArc = function (x1, y1, x2, y2, curve){
+Board.prototype.drawArc = function(x1, y1, x2, y2, curve){
     var segmentLength = 0.5;//TODO should be changed by user
     segmentLength = Math.min(segmentLength, 1.0);
     segmentLength = Math.max(segmentLength, 0.1);
@@ -3115,7 +3118,7 @@ Board.prototype.isZonesLayer = function(layerKey){
 
 Board.prototype.isTopLayer = function(layerKey){
     if(this.type == Board.types.kiCad)
-        return (layerKey % 2) == 0;
+        return (layerKey % 2) === 0;
     else
         return (layerKey % 2) == 1;
 };
@@ -3137,7 +3140,7 @@ Board.prototype.CalculateLayerPositions = function(){
 
 Board.prototype.buildBoardZones = function (plainWires, plainCircles, elements) {
     //Build dimesion and Restric polygons
-    var wires = [], i, h, n, w;
+    var wires = [], i, h, n, w, wire;
     
     for (var elemKey in elements) {
         var elem = elements[elemKey];
@@ -3160,8 +3163,8 @@ Board.prototype.buildBoardZones = function (plainWires, plainCircles, elements) 
     }
     for (var plainWireKey in plainWires) {
         if (plainWires[plainWireKey].length > 0) {
-            for (var i = 0; i < plainWires[plainWireKey].length; i++) {
-                var wire = plainWires[plainWireKey][i];
+            for (i = 0; i < plainWires[plainWireKey].length; i++) {
+                wire = plainWires[plainWireKey][i];
                 if(this.isZonesLayer(wire.layer)){
                     wires.push(wire);
                 }
@@ -3170,7 +3173,7 @@ Board.prototype.buildBoardZones = function (plainWires, plainCircles, elements) 
     }
     for (var plainCircleKey in plainCircles) {
         if (plainCircles[plainCircleKey].length > 0) {
-            for (var i = 0; i < plainCircles[plainCircleKey].length; i++) {
+            for (i = 0; i < plainCircles[plainCircleKey].length; i++) {
                 var circle = plainCircles[plainCircleKey][i];
                 if(this.isZonesLayer(circle.layer)){
                     // we have a dimension, push the circle as two half-circle wires
@@ -3302,13 +3305,13 @@ Board.prototype.buildBoardZones = function (plainWires, plainCircles, elements) 
     this.solderMasks = [];
     piStartIndex = 0;
     var piEndIndex = 0;
-    for(var n=0; n<pathInfo.length; n++){
+    for(n=0; n<pathInfo.length; n++){
         var path = [];
         var pi = pathInfo[n];
         var curves = [];
-        for (var i = pi.start; i <= pi.end; i++) {
-            var wire = wires[i];
-            if(wire.curve == 0){
+        for (i = pi.start; i <= pi.end; i++) {
+            wire = wires[i];
+            if(wire.curve === 0){
                 path.push({X: wire.x1, Y: wire.y1});
                 piEndIndex++;
             }
@@ -3374,7 +3377,7 @@ Board.prototype.buildBoardZones = function (plainWires, plainCircles, elements) 
 
     //We now need to check which paths to deflate
     for(i=0; i<this.dimensions.length; i++){
-        for(j=0; j<this.dimensions.length; j++){
+        for(var j=0; j<this.dimensions.length; j++){
             if (i==j) continue;//skip ourself
             var pi1 = this.dimensions[i];
             if(pi1.type < 0) continue;//skip open path
@@ -3417,15 +3420,15 @@ Board.prototype.parseEagle = function () {
     
     this.param.supply = {thermalIsolate: 0, thermalsForVias: false};
     
-    var i, j, k, l, layerSetup;
+    var i, j, k, layerSetup;
     var param = this.boardXML.getElementsByTagName('param');
-    for (var i = 0; i < param.length; i++){
+    for (i = 0; i < param.length; i++){
         var p = param[i];
         var name = p.getAttribute("name");
         if(name == "useDiameter"){
             var n = parseInt(p.getAttribute("value"), 10);
-            this.param.restring.pads.useDiameter = ((n & 0x02) != 0);
-            this.param.restring.vias.useDiameter = ((n & 0x10) != 0);
+            this.param.restring.pads.useDiameter = ((n & 0x02) !== 0);
+            this.param.restring.vias.useDiameter = ((n & 0x10) !== 0);
         }
         if(name =="layerSetup"){
             layerSetup = p.getAttribute("value").slice(1,-1).split(/[\*\+]+/);
@@ -3705,11 +3708,11 @@ Board.prototype.parseEagle = function () {
         }, this);
         
         elmPkg.pads.forEach(function (xmlPad){
+            var pad = parsePad(xmlPad, elem, this.param.restring.pads);
             for(var l = 1; l <= 16; l++){
                 var layer = this.layers.find(byKey, l);
                 if(layer){
                     var signal = this.getSignal(layer, signalKey);
-                    var pad = parsePad(xmlPad, elem, this.param.restring.pads);
                     if(l == 1)
                         {pad.sizeX = pad.sizeY = pad.diameterTop; }
                     else if(l == 16)
@@ -3789,7 +3792,7 @@ Board.prototype.parseEagle = function () {
     function parseClass(netClass){
         var clearances = netClass.getElementsByTagName('clearance');
         console.log(clearances);
-        var clearance = clearances.length == 0? 0 : clearances[0].getAttribute('value'); //TODO: Check which clearance value to use!
+        var clearance = clearances.length === 0? 0 : clearances[0].getAttribute('value'); //TODO: Check which clearance value to use!
         return {
             key: parseInt(netClass.getAttribute('number'), 10),
             name: netClass.getAttribute('name'),
@@ -3990,7 +3993,7 @@ Board.prototype.parseEagle = function () {
             rotation = parseInt(rot.replace(/S|M|R/g, ""), 10) * Math.PI / 180,
             pt = [{X:x1, Y:y1}, {X:x1, Y:y2}, {X:x2, Y:y2}, {X:x2, Y:y1},],
             vertices = [], i;
-            if(rotation != 0){
+            if(rotation !== 0){
                 var cx = x1 + (x2 - x1) / 2,
                     cy = y1 + (y2 - y1) / 2,
                     rd = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
@@ -4175,7 +4178,7 @@ Board.prototype.parseKiCad = function () {
     function parseClass(netClass, key){
         var add_nets = netClass.getElementsByTagName('add_net');
         var nets = [];
-        Array.from(add_nets).forEach(function(add_net){nets.push(add_net.getAttribute('name'))});
+        Array.from(add_nets).forEach(function(add_net){nets.push(add_net.getAttribute('name'));});
         return {
             key: key,
             name: netClass.getAttribute('name'),
@@ -4380,7 +4383,7 @@ function kiCadXmlParser(){
     
     function getEndIndex(text, oIndex){
         var i = oIndex+1, l=text.length, bCount=1, quotedText=false;
-        while (i<l && bCount!=0){
+        while (i<l && bCount !== 0){
             var c = text.charAt(i);
             if(c == '"'){
                 if(quotedText)
@@ -4419,7 +4422,7 @@ function kiCadXmlParser(){
             var c = text.charAt(i);
             if(c == '"') doubleQuoteCount++;
             else if(c == '\'') singleQuoteCount++;
-            else if(c == '(' && doubleQuoteCount % 2 == 0 && singleQuoteCount % 2 == 0) return i;
+            else if(c == '(' && doubleQuoteCount % 2 === 0 && singleQuoteCount % 2 === 0) return i;
         }
         return 0;
     }
@@ -4504,14 +4507,15 @@ function kiCadXmlParser(){
             var innerText = text.substring(obi+1, cbi).trim();
             var attributes = getAttributes(innerText);
             if(attributes.hasChildren){
+                var element;
                 if(parent.nodeName == attributes.name){
                     assigneAttributes(parent, attributes.values);
-                    var element = getDrawingElement();
+                    element = getDrawingElement();
                     parseText(innerText, element);
                     parent.appendChild(element);
                 }
                 else{
-                    var element = that.doc.createElement(attributes.name);
+                    element = that.doc.createElement(attributes.name);
                     assigneAttributes(element, attributes.values);
                     parseText(innerText, element);
                     addChild(parent, element);
@@ -4520,21 +4524,22 @@ function kiCadXmlParser(){
             }
             else {
                 var vals = text.substring(obi+1, cbi).match(/(".*?"|[^"\s]+)+(?=\s*|\s*$)/g);
+                var param, layers, layer, i, net;
                 if(parent.nodeName == "layers"){
-                    var layer = that.doc.createElement("layer");
+                    layer = that.doc.createElement("layer");
                     layer.setAttribute("id", vals[0]);
                     layer.setAttribute("name", vals[1]);
                     layer.setAttribute("type", vals[2]);
                     parent.appendChild(layer);
                 }
                 else if(parent.nodeName == "setup"){
-                    var param = that.doc.createElement("param");
+                    param = that.doc.createElement("param");
                     param.setAttribute("name", vals[0]);
                     param.setAttribute("value", vals[1]);
                     parent.appendChild(param);
                 }
                 else if(parent.nodeName == "pcbplotparams"){
-                    var param = that.doc.createElement("param");
+                    param = that.doc.createElement("param");
                     param.setAttribute("name", vals[0]);
                     param.setAttribute("value", vals[1]);
                     parent.appendChild(param);
@@ -4546,17 +4551,17 @@ function kiCadXmlParser(){
                     parent.appendChild(xy);
                 }
                 else if(parent.nodeName == "via" && vals[0]=="layers"){
-                    var layers = "";
-                    for(var i=1; i<vals.length; i++) layers+=vals[i] + " ";
+                    layers = "";
+                    for(i=1; i<vals.length; i++) layers+=vals[i] + " ";
                     parent.setAttribute("viaLayers", layers.trim());
                 }
                 else if(parent.nodeName == "pad" && vals[0]=="layers"){
-                    var layers = "";
-                    for(var i=1; i<vals.length; i++) layers+=vals[i] + " ";
+                    layers = "";
+                    for(i=1; i<vals.length; i++) layers+=vals[i] + " ";
                     parent.setAttribute("padLayers", layers.trim());
                 }
                 else if(parent.nodeName == "drawing" && vals[0] == "net"){
-                    var net = that.doc.createElement(vals[0]);
+                    net = that.doc.createElement(vals[0]);
                     net.setAttribute("id", vals[1]);
                     net.setAttribute("name", vals[2]);
                     parent.getElementsByTagName("nets")[0].appendChild(net);
@@ -4565,7 +4570,7 @@ function kiCadXmlParser(){
                     
                 }
                 else if(vals[0] == "add_net"){
-                    var net = that.doc.createElement(vals[0]);
+                    net = that.doc.createElement(vals[0]);
                     net.setAttribute("name", vals[1]);
                     parent.appendChild(net);
                 }
