@@ -4385,7 +4385,7 @@ function kiCadXmlParser(){
         var i = oIndex+1, l=text.length, bCount=1, quotedText=false;
         while (i<l && bCount !== 0){
             var c = text.charAt(i);
-            if(c == '\"'){
+            if(c == "\""){
                 if(quotedText)
                     quotedText = false;
                 else
@@ -4403,14 +4403,14 @@ function kiCadXmlParser(){
         var i = oIndex, l=text.length, match=false, quotedText=false;
         while (i<l && !match){
             var c = text.charAt(i);
-            if(c == '\"'){
+            if(c == "\""){
                 if(quotedText)
                     quotedText = false;
                 else
                     quotedText = true;
             }
             else if(!quotedText){
-                if(c == '(') match = true;
+                if(c == "(") match = true;
             }
             i++;
         }
@@ -4420,9 +4420,9 @@ function kiCadXmlParser(){
         var l = text.length, singleQuoteCount = 0, doubleQuoteCount = 0;
         for(var i = 0; i<l; i++){
             var c = text.charAt(i);
-            if(c == '\"') doubleQuoteCount++;
-            else if(c == '\'') singleQuoteCount++;
-            else if(c == '(' && doubleQuoteCount % 2 === 0 && singleQuoteCount % 2 === 0) return i;
+            if(c == "\"") doubleQuoteCount++;
+            else if(c == "\'") singleQuoteCount++;
+            else if(c == "(" && doubleQuoteCount % 2 === 0 && singleQuoteCount % 2 === 0) return i;
         }
         return 0;
     }
