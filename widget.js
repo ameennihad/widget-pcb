@@ -3074,8 +3074,8 @@ function Board(type, fr4) {
 Board.types = { eagle: "Eagle", kiCad: "KiCad" };
 
 Board.supportedFiles = [
-    { type: Board.types.eagle, ext: ".brd", signature: /<!DOCTYPE eagle SYSTEM "eagle.dtd">[\s\S]*<board>/im },
-    { type: Board.types.kiCad, ext: ".kicad_pcb", signature: /\(kicad_pcb \(version \d+\) \(host pcbnew/i }
+    { type: Board.types.eagle, ext: ".brd", signature: new RegExp("<!DOCTYPE eagle SYSTEM \"eagle.dtd\">[\\s\\S]*<board>", "im") },
+    { type: Board.types.kiCad, ext: ".kicad_pcb", signature: new RegExp("\\(kicad_pcb \\(version \\d+\\) \\(host pcbnew", "i") }
 ];
 
 
