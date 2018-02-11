@@ -52,7 +52,7 @@
                     </div>
                 </div>
             </div> <span class="panel-title" data-toggle="popover">PCB Widget</span> <span style="font-size:9px;" class="fb-build">beta</span>
-            <div class="board-draghere" style="font-size:80%; margin-top:5px;">Drag your board file here...</div>
+            <div class="pcb-draghere" style="font-size:80%; margin-top:5px;">Drag your board file here...</div>
         </div>
         <div class="panel-body">
             <!-- Nav tabs -->
@@ -64,7 +64,7 @@
             <!-- Tab panes -->
 
             <div class="tab-content">
-    
+
                 <!-- Render Tab -->
                 <div class="tab-pane active" id="com-chilipeppr-widget-pcb-tab-render">
                     <div class="enclosed-group">
@@ -115,9 +115,9 @@
                 <div class="tab-pane" id="com-chilipeppr-widget-pcb-tab-fr4">
                     <!--  ----------------------- RENDER:BOARD:BLANK FR4 BOARD ------------------------>
                     <div style="border:1px dashed black; padding:0 10px;border-radius:6px;">
-                        
+
                     <div class="form-group">
-                        <h2 style="margin-top:10px;">Blank FR4 Board</h2> 
+                        <h2 style="margin-top:10px;">Blank FR4 Board</h2>
                     </div>
                     Location (X, Y)
                     <p class="descriptive-text" style="margin-bottom: 0px; padding-top: 0px;">Location of left bottom corner of blank FR4 board</p>
@@ -158,15 +158,15 @@
                     <div class="checkbox" style="margin-bottom:0px;">
                         <label>
                             <input type="checkbox" class="form-group use-reg-holes" checked>
-                            <h2 style="margin-top:10px; margin-bottom:0px;">Registration Holes</h2> 
+                            <h2 style="margin-top:10px; margin-bottom:0px;">Registration Holes</h2>
                         </label>
                     </div>
                     <p class="descriptive-text reg-holes-note" style="margin:0px; padding:0px; color:red">Check Blank FR4 Board to enable this feature.</p>
                     <p class="descriptive-text">
                         The following settings will generate Gcode to drill registration holes.
                         This will be a seperate Gcode file available in the textbox below.
-                        The registration holes are useful when milling a board with multiple 
-                        layers or whenever there is a need to remove the board and put it 
+                        The registration holes are useful when milling a board with multiple
+                        layers or whenever there is a need to remove the board and put it
                         back in exactly the same location.</p>
                     Holes Pattern
                     <div class="form-group">
@@ -180,7 +180,7 @@
                         </select>
                         <p class="descriptive-text">T: Top, B: Bottom, L: Left, R: Right.</p>
                     </div>
-                    
+
                     Holes Diameter
                     <div class="input-group" style="margin-bottom: 10px;">
                         <input class="form-control reg-holes-diameter" type="number" placeholder="Diameter" value="1" min="0.6" max="4" step=".1"/>
@@ -194,25 +194,25 @@
                     <!--  ----------------------- RENDER:BOARD:REGISTRATION HOLES:GCODE ------------------------>
                     <h2 style="margin-top:10px;">Gcode Parameters</h2>
                     <p class="descriptive-text" style="padding-top: 0px;">Following Gcode parementers are used for drilling registration holes only.</p>
-                    
+
                     Depth for Drilling
                     <div class="input-group" style="margin-bottom: 10px;">
                         <input class="form-control reg-holes-depth" type="number" placeholder="Depth" value="-1.7" min="-20" max="-0.1" step="0.1"/>
                         <div class="input-group-addon">mm</div>
                     </div>
-                    
+
                     Clearance Height
                     <div class="input-group" style="margin-bottom: 10px;">
                         <input class="form-control reg-holes-clearance" type="number" placeholder="Clearance" value="2" min="0.5" step="0.5"/>
                         <div class="input-group-addon">mm</div>
                     </div>
-                    
+
                     Feedrate
                     <div class="input-group" style="margin-bottom: 10px;">
                         <input class="form-control reg-holes-feedrate" type="number" placeholder="Feed rate" value="200" min="20" step="100"/>
                         <div class="input-group-addon">mm/min</div>
                     </div>
-                    
+
                     Spindle Speed
                     <div class="input-group" style="margin-bottom: 10px;">
                         <input class="form-control reg-holes-spindle-rpm" type="number" placeholder="Speed" value="12000" min="3000" step="1000"/>
@@ -272,7 +272,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         <div id="edit-dimension" class="edit-popup">
           <div class="edit-popup-content">
             <div class="edit-popup-header">
@@ -287,7 +287,7 @@
               <h3>Modal Footer</h3>
             </div>
           </div>
-        
+
         </div>
     </div>
 </body>

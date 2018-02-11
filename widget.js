@@ -173,6 +173,10 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
 
             }
 
+            this.readFr4Values();
+            this.readRegHoleGcodeValues();
+            this.readRegHoleValues();
+
             this.setupUiFromLocalStorage();
             this.btnSetup();
             this.forkSetup();
@@ -720,7 +724,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 console.info("PCBW", "open. loading from passed in data. data.length:", data.length, "info:", info);
                 file = data;
                 this.fileInfo = info;
-                $(this.getElementClass("board-draghere")).addClass("hidden");
+                $(this.getElementClass("pcb-draghere")).addClass("hidden");
                 validFile = true;
             }
             else {
@@ -758,17 +762,17 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
 
             this.clearBoard();
             this.clear3dViewer();
-            this.readFr4Values();
-            this.readRegHoleGcodeValues();
-            this.readRegHoleValues();
             if (validFile) {
                 this.board = new Board(droppedFile.type, this.fr4);
                 this.board.loadText(file);
                 this.tools = new TOOLS();
             }
             this.setupUiParameters();
-            this.render3d();
+            this.render3d(function() {
+                    console.log("got callback from draw3d");
+                });
 
+            chilipeppr.publish('/com-chilipeppr-widget-3dviewer/setunits', "mm" );
             chilipeppr.publish("/com-chilipeppr-widget-3dviewer/drawextents");
             chilipeppr.publish("/com-chilipeppr-widget-3dviewer/viewextents");
         },
