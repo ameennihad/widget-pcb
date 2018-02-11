@@ -4921,7 +4921,8 @@ function kiCadXmlParser() {
                 }
             }
             else {
-                var vals = text.substring(obi + 1, cbi).match(/(".*?"|[^"\s]+)+(?=\s*|\s*$)/g);
+                var reqEx = new RegExp("(\".*?\"|[^\"\\s]+)+(?=\\s*|\\s*$)", "g");
+                var vals = text.substring(obi + 1, cbi).match(reqEx);
                 var param, layers, layer, i, net;
                 if (parent.nodeName == "layers") {
                     layer = that.doc.createElement("layer");
