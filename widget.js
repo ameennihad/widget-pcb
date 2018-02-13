@@ -170,8 +170,10 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 // and once it sees one, it should then load this widget
                 // so that users who don't use ChiliPeppr for BRD files
                 // don't have to load all this insane code
-
             }
+
+            //TODO: Remove this line & onFileInputChanged event when drag/drop is implemented
+            $(this.getElementId("pcbw-file-input")).change(this.onFileInputChanged.bind(this));
 
             this.readFr4Values();
             this.readRegHoleGcodeValues();
@@ -183,6 +185,23 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.init3d();
             //this.open();
             this.setupMouseOver();
+        },
+        onFileInputChanged: function(e){
+            var file = e.target.files[0];
+                if (!file) {
+                return;
+            }
+            var reader = new FileReader();
+            var that = this;
+            reader.onload = function(e) {
+                var contents = e.target.result;
+                var info = {
+                	name: e.target.fileName,
+                	lastModified: new Date()
+                };
+                that.open(contents, info);
+            };
+            reader.readAsText(file, "UTF-8");
         },
         getElementId: function(id) {
             return "#" + this.id + " #" + id;

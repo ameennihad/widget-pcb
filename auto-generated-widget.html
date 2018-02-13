@@ -394,8 +394,10 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 // and once it sees one, it should then load this widget
                 // so that users who don't use ChiliPeppr for BRD files
                 // don't have to load all this insane code
-
             }
+
+            //TODO: Remove this line & onFileInputChanged event when drag/drop is implemented
+            $(this.getElementId("pcbw-file-input")).change(this.onFileInputChanged.bind(this));
 
             this.readFr4Values();
             this.readRegHoleGcodeValues();
@@ -407,6 +409,23 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             this.init3d();
             //this.open();
             this.setupMouseOver();
+        },
+        onFileInputChanged: function(e){
+            var file = e.target.files[0];
+                if (!file) {
+                return;
+            }
+            var reader = new FileReader();
+            var that = this;
+            reader.onload = function(e) {
+                var contents = e.target.result;
+                var info = {
+                	name: e.target.fileName,
+                	lastModified: new Date()
+                };
+                that.open(contents, info);
+            };
+            reader.readAsText(file, "UTF-8");
         },
         getElementId: function(id) {
             return "#" + this.id + " #" + id;
@@ -5251,7 +5270,8 @@ function kiCadXmlParser() {
         <div class="panel-body">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-                <li class="active"><a href="#com-chilipeppr-widget-pcb-tab-render" role="tab" data-toggle="tab">Render</a></li>
+                <li class="active"><a href="#com-chilipeppr-widget-pcb-tab-file" role="tab" data-toggle="tab">File</a></li>
+                <li><a href="#com-chilipeppr-widget-pcb-tab-render" role="tab" data-toggle="tab">Render</a></li>
                 <li><a href="#com-chilipeppr-widget-pcb-tab-fr4" role="tab" data-toggle="tab">FR4</a></li>
                 <li><a href="#com-chilipeppr-widget-pcb-tab-cam" role="tab" data-toggle="tab">CAM</a></li>
             </ul>
@@ -5259,8 +5279,14 @@ function kiCadXmlParser() {
 
             <div class="tab-content">
 
+                <div class="tab-pane active" id="com-chilipeppr-widget-pcb-tab-file">
+                    <div class="form-group">
+                        <input type="file" id="pcbw-file-input" style="margin-top:10px;"/>
+                        <p class="descriptive-text">This tab is temporary unti I figure out how to handel drag/drop correctly.</p>
+                    </div>
+                </div>
                 <!-- Render Tab -->
-                <div class="tab-pane active" id="com-chilipeppr-widget-pcb-tab-render">
+                <div class="tab-pane" id="com-chilipeppr-widget-pcb-tab-render">
                     <div class="enclosed-group">
                         <div class="form-group">
                             <h2 style="margin-top:10px;">Board Layer(s)</h2>
