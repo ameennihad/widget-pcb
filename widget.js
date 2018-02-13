@@ -768,13 +768,90 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.tools = new TOOLS();
             }
             this.setupUiParameters();
-            this.render3d(function() {
-                    console.log("got callback from draw3d");
-                });
+            this.render3d();
+            // this.draw3d(function() {
+            //         console.log("got callback from draw3d");
+            //     });
 
             chilipeppr.publish('/com-chilipeppr-widget-3dviewer/setunits', "mm" );
             chilipeppr.publish("/com-chilipeppr-widget-3dviewer/drawextents");
             chilipeppr.publish("/com-chilipeppr-widget-3dviewer/viewextents");
+        },
+        //TODO: Optimze and use the following three methods
+        draw3d: function (callback) {
+            if (!this.is3dViewerReady) {
+                var that = this;
+                setTimeout(function () {
+                    if (!that.is3dViewerReady) {
+                        setTimeout(function () {
+                            if (!that.is3dViewerReady) {
+                                console.log("giving up on drawing into 3d for Eagle Brd");
+                            } else {
+                                console.log("ready to draw 3d on 3rd attempt");
+                                that.onDraw3dReady();
+                                if (callback) callback();
+                            }
+                        }, 5000);
+                    } else {
+                        console.log("ready to draw 3d on 2nd attempt");
+                        that.onDraw3dReady();
+                        if (callback) callback();
+                    }
+                }, 2000);
+            } else {
+                console.log("ready to draw 3d on 1st attempt");
+                this.onDraw3dReady();
+                if (callback) callback();
+            }
+        },
+        onDraw3dReady: function () {
+
+    		console.group("draw3d");
+
+            // inform any listeners that we're starting parsing, i.e. we're done with
+            // all of our draw3dxxx functions which means all our three.js objects
+            // and clipper objects are generated.
+            chilipeppr.publish("/" + this.id + '/beforeLayerGenerate', this);
+
+
+            this.clear3dViewer();
+            this.render3d();
+            // obj3d is the original THREE.Object3D() for the 3d
+            // viewer. the extents x/y/z vals are calculated off of
+            // it so we need a fake object to put in there
+            console.log("this.obj3d:", this.obj3d);
+
+            //This line is disable to keep view angle unchanges when refresh is clicked
+            //XXXchilipeppr.publish('/com-chilipeppr-widget-3dviewer/viewextents' );
+
+            // inform any listeners that we're done parsing, i.e. we're done with
+            // all of our draw3dxxx functions which means all our three.js objects
+            // and clipper objects are generated.
+            chilipeppr.publish("/" + this.id + '/afterLayerGenerate', this);
+
+            // setTimeout(this.onRefresh.bind(this, null, this.onDraw3dReadyAfter), 2000);
+
+            // for debug, spit out console info
+            var that = this;
+            setTimeout(function() {
+                console.log("DONE GENERATING BOARD. this:", that, "eagle obj we will draw:", that.eagle);
+            }, 4000);
+
+            console.log("done drawing Eagle PCB Board");
+            console.groupEnd();
+        },
+        onDraw3dReadyAfter: function() {
+            console.log("onDraw3dReadyAfter");
+            // ask 3d viewer to set things up now
+            chilipeppr.publish('/com-chilipeppr-widget-3dviewer/setunits', "mm" );
+            chilipeppr.publish('/com-chilipeppr-widget-3dviewer/drawextents' );
+            //This line is disable to keep view angle unchanges when refresh is clicked
+            //XXXchilipeppr.publish('/com-chilipeppr-widget-3dviewer/viewextents' );
+            $(window).trigger('resize');
+            if (this.obj3dmeta && this.obj3dmeta.widget) {
+                this.obj3dmeta.widget.wakeAnimate();
+            }
+
         },
         /**
          * This method is called from the main workspace telling us the user
@@ -1079,13 +1156,26 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             }
             var flippingAxis = $(this.getElementId("flippingAxis :selected")).text();
             console.log("flippingAxis", flippingAxis);
-            var xa = flippingAxis.startsWith("X") ? 1 : 0;
-            var ya = flippingAxis.startsWith("Y") ? 1 : 0;
+            var xa = (flippingAxis.startsWith("X") ? 1 : 0) * (isTopLayer ? 0 : 1);
+            var ya = (flippingAxis.startsWith("Y") ? 1 : 0) * (isTopLayer ? 0 : 1);
             this.boards3d.forEach(function(board3d) {
-                board3d.group.rotation.x = isTopLayer ? 0 : Math.PI * xa;
-                board3d.group.rotation.y = isTopLayer ? 0 : Math.PI * ya;
-                board3d.group.position.z = isTopLayer ? 0 : -this.board.fr4.depth;
+                board3d.group.rotation.x = Math.PI * xa;
+                board3d.group.rotation.y = Math.PI * ya;
             }, this);
+
+            this.adjustBoards3dPositions();
+            this.render3dBoard();
+            if(flippingAxis.includes("complete FR4") && !isTopLayer){
+                var xd = this.fr4.width - this.fr4.x;
+                var yd = this.fr4.height - this.fr4.y;
+                this.boards3d.forEach(function(board3d) {
+                    if(ya == 1) board3d.group.position.x = xd - board3d.getX();
+                    if(xa == 1) board3d.group.position.y = yd - board3d.getY();
+                });
+                this.board3dFr4.rotation.x = Math.PI * xa;
+                this.board3dFr4.rotation.y = Math.PI * ya;
+            }
+
             this.obj3dmeta.widget.wakeAnimate();
         },
         onChangeRenderSignals: function(layerIndex) {
@@ -1231,8 +1321,9 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             }
 
             //this.adjustBoards3dPositions();
-            this.render3dBoard();
             if (this.boards3d) this.adjustBoards3dPositions();
+            this.render3dBoard();
+
             // if(this.blankBoardSceneGroup !== null) this.sceneRemove(this.blankBoardSceneGroup);
 
             // this.draw3dBlankBoard();
@@ -1251,8 +1342,9 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
         onChangeRegHolesParamenters: function() {
             this.readRegHoleValues();
 
-            this.render3dBoard();
             if (this.boards3d) this.adjustBoards3dPositions();
+            this.render3dBoard();
+
             //this.regHoles.holes = this.getRegHoles();
             //this.exportGcodeRegistrationHoles();
         },
@@ -1305,12 +1397,18 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 h = this.board.boardBoundaries.MaximumY - this.board.boardBoundaries.MinimumY,
                 f = this.board.fr4,
                 x = f.x + f.paddingL + w / 2,
-                y = f.y + f.paddingB + h / 2;
+                y = f.y + f.paddingB + h / 2,
+                z = f.depth / 2 - 0.04;
             this.boards3d.forEach(function(board3d) {
+                if(board3d.group.visible){
                 board3d.group.position.x = x;
                 board3d.group.position.y = y;
-                board3d.group.position.z = f.depth / 2 - 0.04;
+                //board3d.group.position.z = z;
+                console.log("Ameen Z of BRD adj to:", board3d.group.position.z);
+                // board3d.width = w;
+                // board3d.height = h;
                 x += w + f.spacing;
+                }
             }, this);
             this.obj3dmeta.widget.wakeAnimate();
         },
@@ -1605,8 +1703,9 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                         dHoles = dHoles.concat(dimension.outerPath);
                 }, this);
                 var solPaths = PATHS.getDifferenceOfPaths(dPaths, dHoles);
-                var boardMeshs = this.createTheeGroupFromPolyTree(solPaths, boardMat, boardDepth, wireMat);
-                boardMeshs.position.z = z + zDepths.copper - boardDepth;
+                var boardMeshs = this.createThreeGroupFromPolyTree(solPaths, boardMat, boardDepth, wireMat);
+                //boardMeshs.position.z = z + zDepths.copper - boardDepth;
+                //console.log("Ameen Z - Board No.", b, "Z:", boardMeshs.position.z);
                 board3d.copper = boardMeshs;
                 boardMeshs.userData.type = "ignore";
                 this.intersectObjects.push(boardMeshs);
@@ -1632,7 +1731,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                         opacity: this.opacitySignals
                     });
                     var clearancePaths = PATHS.getDifferenceOfPaths(layer.inflatedPaths, dHoles);
-                    var clearanceMeshs = this.createTheeGroupFromPolyTree(clearancePaths, clearanceMat);
+                    var clearanceMeshs = this.createThreeGroupFromPolyTree(clearancePaths, clearanceMat);
                     zd = isTopLayer ? zDepths.clearance : -zDepths.clearance;
                     clearanceMeshs.position.z = z + zd;
                     clearanceMeshs.name = "clearace";
@@ -1673,7 +1772,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                                     opacity: 0.8
                                 });
                                 var solPaths = PATHS.getDifferenceOfPaths(signal.polygonPaths, dHoles);
-                                var polygonMeshs = this.createTheeGroupFromPolyTree(solPaths, polygonMat);
+                                var polygonMeshs = this.createThreeGroupFromPolyTree(solPaths, polygonMat);
                                 var pd = isTopLayer ? zDepths.polys : -zDepths.polys;
                                 polygonMeshs.position.z = z + pd;
                                 board3d.layers[l].polygons.add(polygonMeshs);
@@ -1781,11 +1880,16 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 this.board.dimensions.forEach(function(dimension) {
                     if (dimension.type === 0) {
                         this.boards3d.forEach(function(board3d) {
+                            if(board3d.group.visible) {
                             dimension.outerPath.forEach(function(dPath) {
                                 var path = this.copyPath(dPath);
-                                PATHS.adjustPath(path, 0, x1 + this.fr4.paddingL, y1 + this.fr4.paddingB);
+                                //PATHS.adjustPath(path, 0, x1 + this.fr4.paddingL, y1 + this.fr4.paddingB);
+                                var x = x1 + board3d.getX() + board3d.getDisplacedX() - this.fr4.x;
+                                var y = y1 + board3d.getY() + board3d.getDisplacedY() - this.fr4.y;
+                                PATHS.adjustPath(path, 0, x, y);
                                 holePaths.push(path);
                             }, this);
+                            }
                         }, this);
                     }
                 }, this);
@@ -1794,11 +1898,11 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             // console.log("holePaths", holePaths);
             var fr4Paths = PATHS.getDifferenceOfPaths([boardPath], holePaths);
             // console.log("fr4Paths", fr4Paths);
-            this.board3dFr4 = this.createTheeGroupFromPolyTree(fr4Paths, boardMat, z1 - z2, wireMat);
+            this.board3dFr4 = this.createThreeGroupFromPolyTree(fr4Paths, boardMat, z1 - z2, wireMat);
             // this.board3dFr4.children.forEach(function(boardMesh) {boardMesh.geometry.center()});
             this.board3dFr4.position.x = this.fr4.x + this.fr4.width / 2;
             this.board3dFr4.position.y = this.fr4.y + this.fr4.height / 2;
-            this.board3dFr4.position.z = -this.fr4.depth + zShrink;
+            //this.board3dFr4.position.z = -this.fr4.depth + zShrink;
 
             var visible = $(this.getElementId("renderBlank")).prop("checked");
             if (visible) this.sceneAdd(this.board3dFr4);
@@ -2403,7 +2507,7 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
             }, this);
             return group;
         },
-        createTheeGroupFromPolyTree: function(polyTree, material, depth, wireMaterial) {
+        createThreeGroupFromPolyTree: function(polyTree, material, depth, wireMaterial) {
             var group = new THREE.Group();
             polyTree.forEach(function(pti) {
                 var shape = new THREE.Shape();
@@ -2424,6 +2528,9 @@ cpdefine("inline:com-chilipeppr-widget-pcb", ["chilipeppr_ready", "Clipper", "jq
                 if (depth !== undefined) {
                     var extrudeSettings = { steps: 1, amount: depth, bevelEnabled: false, bevelThickness: 0, bevelSize: 0, bevelSegments: 0 };
                     geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                    geometry.vertices.forEach(function(v){
+                        if(v.z == 0) v.z = -depth/2; else v.z = depth/2;
+                    });
                 }
                 else
                     geometry = new THREE.ShapeGeometry(shape);
@@ -3007,6 +3114,9 @@ function Board3d() {
     this.bottom = new Layer3d();
     this.layers = [this.top, this.bottom];
 
+
+    this.centered = false;
+
     this.group = new THREE.Group();
 
     function Layer3d() {
@@ -3018,41 +3128,66 @@ function Board3d() {
         this.silk = new THREE.Mesh();
     }
 
+    Board3d.prototype.getX = function(){ return this.group.position.x;};
+    Board3d.prototype.getY = function(){ return this.group.position.y;};
+    Board3d.prototype.getWidth = function(){
+        if(!this.centered) this.center;
+        return this.groupBox.max.x - this.groupBox.min.x;
+    };
+    Board3d.prototype.getHeight = function(){
+        if(!this.centered) this.center;
+        return this.groupBox.max.y - this.groupBox.min.y;
+    };
+    Board3d.prototype.getDisplacedX = function(){
+        if(!this.centered) this.center;
+        return this.center.x;
+    };
+    Board3d.prototype.getDisplacedY = function(){
+        if(!this.centered) this.center;
+        return this.center.y;
+    };
     Board3d.prototype.center = function() {
         var childBox = new THREE.Box3();
-        var groupBox = new THREE.Box3();
-
+        this.groupBox = new THREE.Box3();
+        var that = this;
         this.group.traverse(function(child) {
             if (child instanceof THREE.Mesh) {
-                if (!child.geometry.boundingBox) {
+                if (!child.geometry.boundingBox || true) {
                     child.geometry.computeBoundingBox();
                 }
                 childBox.copy(child.geometry.boundingBox);
                 child.updateMatrixWorld(true);
                 childBox.applyMatrix4(child.matrixWorld);
-                groupBox.min.min(childBox.min);
-                groupBox.max.max(childBox.max);
+                that.groupBox.min.min(childBox.min);
+                that.groupBox.max.max(childBox.max);
             }
         });
-        var center = new THREE.Vector3(-(groupBox.min.x + (groupBox.max.x - groupBox.min.x) / 2), -(groupBox.min.y + (groupBox.max.y - groupBox.min.y) / 2), -(groupBox.min.z + (groupBox.max.z - groupBox.min.z) / 2));
+        this.center = new THREE.Vector3(
+            -(this.groupBox.min.x + (this.groupBox.max.x - this.groupBox.min.x) / 2),
+            -(this.groupBox.min.y + (this.groupBox.max.y - this.groupBox.min.y) / 2),
+            -(this.groupBox.min.z + (this.groupBox.max.z - this.groupBox.min.z) / 2));
+            console.log("Ameen Z - Center", this.center);
         this.group.traverse(function(child) {
             if (child instanceof THREE.Mesh) {
                 child.geometry.vertices.forEach(function(vertex) {
-                    vertex.add(center);
-                }, this);
+                    //vertex.add(that.center);
+                    vertex.x += that.center.x;
+                    vertex.y += that.center.y;
+                });
+                //child.updateMatrixWorld(true);
             }
             else {
                 if (child instanceof THREE.LineSegments) {
                     var vals = child.geometry.attributes.position.array;
                     for (var i = 0; i < vals.length; i += 3) {
-                        vals[i] += center.x;
-                        vals[i + 1] += center.y;
-                        vals[i + 2] += center.z;
+                        vals[i] += that.center.x;
+                        vals[i + 1] += that.center.y;
+                        //vals[i + 2] += that.center.z;
                     }
                 }
             }
-        }, this);
-
+        });
+        this.centered = true;
     };
 }
 
@@ -3270,7 +3405,8 @@ Board.prototype.signalLayers = function() {
 Board.prototype.CalculateLayerPositions = function() {
     this.layerPositions = [];
     for (var i = 0; i < this.signalLayersCount; i++) {
-        this.layerPositions.push(-(i % 2) * this.fr4.depth - Math.floor(i / 2) * this.fr4.seperation);
+        var d = (i % 2)? -this.fr4.depth / 2 : this.fr4.depth / 2;
+        this.layerPositions.push(d  - Math.floor(i / 2) * this.fr4.seperation);
     }
 };
 
@@ -4671,9 +4807,9 @@ function kiCadXmlParser() {
     }
 
     function parseText(text, parent) {
-        var obi = 0,
-            cbi = 0; // opening bracket index & closing bracket index
+        var obi = 0, cbi = 0; // opening bracket index & closing bracket index
         text = text.trim();
+        console.log("parent", parent);
         while (cbi < text.length - 1 && obi != -1 && cbi != -1) {
             //obi = text.indexOf("(", cbi);
             obi = getStartIndex(text, cbi);
